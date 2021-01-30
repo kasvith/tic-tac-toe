@@ -21,7 +21,6 @@ defmodule TicTacToe.Session.Test do
 
     assert :ok = TicTacToe.Session.move(pid, "X", 0)
 
-    assert {:winner, nil, :board_full, false, :next_player, "O"} =
-             TicTacToe.Session.get_status(pid)
+    assert {:winner, nil, :board_full, false, :player, "O"} = TicTacToe.Session.get_status(pid)
   end
 end
