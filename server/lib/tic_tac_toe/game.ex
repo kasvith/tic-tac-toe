@@ -53,11 +53,8 @@ defmodule TicTacToe.Game do
     game.current_player === player
   end
 
-  @doc """
-  get the next player based on `player`
-  """
   @spec next_player(String.t()) :: String.t()
-  def next_player(player) when player in [@player, @opponent] do
+  defp next_player(player) when player in [@player, @opponent] do
     case player do
       @player -> @opponent
       @opponent -> @player

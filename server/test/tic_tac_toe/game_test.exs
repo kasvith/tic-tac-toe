@@ -20,12 +20,6 @@ defmodule TicTacToe.Game.Test do
     assert {:error, _} = result
   end
 
-  test "gives correct next player" do
-    game = TicTacToe.Game.new()
-    next_player = TicTacToe.Game.next_player(game.current_player)
-    assert next_player === "O"
-  end
-
   test "gives correct board full" do
     empty_board = [nil, nil, nil, nil, nil, nil, nil, nil, nil]
     full_board = ["X", "X", "X", "O", "O", "O", "X", "X", "X"]

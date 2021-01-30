@@ -51,7 +51,7 @@ defmodule TicTacToe.Session do
         :board_full,
         TicTacToe.Game.board_full?(game.board),
         :next_player,
-        TicTacToe.Game.next_player(game.current_player)
+        game.current_player
       },
       game
     }
