@@ -41,15 +41,15 @@ defmodule TicTacToe.Game.Test do
   end
 
   test "win row" do
-    row_1 = ["X", "X", "X", nil, nil, nil, nil, nil, nil]
-    row_2 = [nil, nil, nil, "X", "X", "X", nil, nil, nil]
-    row_3 = [nil, nil, nil, nil, nil, nil, "X", "X", "X"]
+    row_1 = ["X", "X", "X", "O", "X", "O", "X", "O", "X"]
+    row_2 = ["O", "X", "O", "X", "X", "X", "X", "O", "X"]
+    row_3 = ["X", "O", "X", "O", "X", "O", "X", "X", "X"]
     row_4 = ["X", "O", "X", nil, nil, nil, nil, nil, nil]
 
-    assert TicTacToe.Game.is_win(row_1) === "X"
-    assert TicTacToe.Game.is_win(row_2) === "X"
-    assert TicTacToe.Game.is_win(row_3) === "X"
-    assert TicTacToe.Game.is_win(row_4) === nil
+    assert TicTacToe.Game.get_winner(row_1) === "X"
+    assert TicTacToe.Game.get_winner(row_2) === "X"
+    assert TicTacToe.Game.get_winner(row_3) === "X"
+    assert TicTacToe.Game.get_winner(row_4) === nil
   end
 
   test "win column" do
@@ -58,15 +58,15 @@ defmodule TicTacToe.Game.Test do
     col_3 = [nil, nil, "O", nil, nil, "O", nil, nil, "O"]
     col_4 = ["X", nil, nil, "O", nil, nil, "O", nil, nil]
 
-    assert TicTacToe.Game.is_win(col_1) === "O"
-    assert TicTacToe.Game.is_win(col_2) === "O"
-    assert TicTacToe.Game.is_win(col_3) === "O"
-    assert TicTacToe.Game.is_win(col_4) === nil
+    assert TicTacToe.Game.get_winner(col_1) === "O"
+    assert TicTacToe.Game.get_winner(col_2) === "O"
+    assert TicTacToe.Game.get_winner(col_3) === "O"
+    assert TicTacToe.Game.get_winner(col_4) === nil
   end
 
   test "tie" do
-    board = ["O", "X", "O", "X", "O", "X", "O", "X", "X"]
+    board = ["O", "X", "O", "X", "O", "X", "X", "O", "X"]
 
-    assert TicTacToe.Game.is_win(board) === nil
+    assert TicTacToe.Game.get_winner(board) === nil
   end
 end
