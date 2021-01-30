@@ -65,7 +65,7 @@ defmodule TicTacToe.Game do
   end
 
   @doc """
-  get the winner of game `_board`
+  get the winner of game `board`
   """
   @spec is_win(list()) :: String.t() | nil
   def is_win([a, a, a, _, _, _, _, _, _] = _board) when is_nil(a) === false do
