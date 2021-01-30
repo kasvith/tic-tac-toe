@@ -67,40 +67,40 @@ defmodule TicTacToe.Game do
   @doc """
   get the winner of game `board`
   """
-  @spec is_win(list()) :: String.t() | nil
-  def is_win([a, a, a, _, _, _, _, _, _] = _board) when is_nil(a) === false do
+  @spec get_winner(list()) :: String.t() | nil
+  def get_winner([a, a, a, _, _, _, _, _, _] = _board) when is_nil(a) === false do
     a
   end
 
-  def is_win([_, _, _, a, a, a, _, _, _] = _board) when is_nil(a) === false do
+  def get_winner([_, _, _, a, a, a, _, _, _] = _board) when is_nil(a) === false do
     a
   end
 
-  def is_win([_, _, _, _, _, _, a, a, a] = _board) when is_nil(a) === false do
+  def get_winner([_, _, _, _, _, _, a, a, a] = _board) when is_nil(a) === false do
     a
   end
 
-  def is_win([a, _, _, a, _, _, a, _, _] = _board) when is_nil(a) === false do
+  def get_winner([a, _, _, a, _, _, a, _, _] = _board) when is_nil(a) === false do
     a
   end
 
-  def is_win([_, a, _, _, a, _, _, a, _] = _board) when is_nil(a) === false do
+  def get_winner([_, a, _, _, a, _, _, a, _] = _board) when is_nil(a) === false do
     a
   end
 
-  def is_win([_, _, a, _, _, a, _, _, a] = _board) when is_nil(a) === false do
+  def get_winner([_, _, a, _, _, a, _, _, a] = _board) when is_nil(a) === false do
     a
   end
 
-  def is_win([a, _, _, _, a, _, _, _, a] = _board) when is_nil(a) === false do
+  def get_winner([a, _, _, _, a, _, _, _, a] = _board) when is_nil(a) === false do
     a
   end
 
-  def is_win([_, _, a, _, a, _, a, _, _] = _board) when is_nil(a) === true do
+  def get_winner([_, _, a, _, a, _, a, _, _] = _board) when is_nil(a) === true do
     a
   end
 
-  def is_win(_) do
+  def get_winner(_) do
     nil
   end
 
