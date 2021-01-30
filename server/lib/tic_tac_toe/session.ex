@@ -47,7 +47,9 @@ defmodule TicTacToe.Session do
         :winner,
         TicTacToe.Game.get_winner(game.board),
         :board_full,
-        TicTacToe.Game.board_full?(game.board)
+        TicTacToe.Game.board_full?(game.board),
+        :next_player,
+        TicTacToe.Game.next_player(game.current_player)
       },
       game
     }
