@@ -14,6 +14,9 @@ defmodule TicTacToe.Game do
     %TicTacToe.Game{}
   end
 
+  @doc """
+  moves `player` to `position` in `game`
+  """
   @spec move(%TicTacToe.Game{}, String.t(), integer()) ::
           {:error, String.t()} | {:ok, %TicTacToe.Game{}}
   def move(game, player, position)
@@ -38,6 +41,9 @@ defmodule TicTacToe.Game do
     {:error, "invalid player"}
   end
 
+  @doc """
+  can move to the `position`
+  """
   @spec can_move?(%TicTacToe.Game{}, integer) :: boolean
   def can_move?(game, position) do
     Enum.at(game.board, position) === nil
@@ -47,6 +53,9 @@ defmodule TicTacToe.Game do
     game.current_player === player
   end
 
+  @doc """
+  get the next player based on `player`
+  """
   @spec next_player(String.t()) :: String.t()
   def next_player(player) when player in [@player, @opponent] do
     case player do
@@ -55,6 +64,9 @@ defmodule TicTacToe.Game do
     end
   end
 
+  @doc """
+  get the winner of game `_board`
+  """
   @spec is_win(list()) :: String.t() | nil
   def is_win([a, a, a, _, _, _, _, _, _] = _board) when is_nil(a) === false do
     a
@@ -92,6 +104,9 @@ defmodule TicTacToe.Game do
     nil
   end
 
+  @doc """
+  is `board` full
+  """
   @spec board_full?(list()) :: boolean
   def board_full?(board) do
     !Enum.any?(board, &is_nil/1)
