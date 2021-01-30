@@ -6,10 +6,12 @@ defmodule TicTacToe.Session do
     GenServer.start_link(__MODULE__, nil)
   end
 
+  @spec move(atom | pid | {atom, any} | {:via, atom, any}, String.t(), integer()) :: any
   def move(session_pid, player, position) do
     GenServer.call(session_pid, {:move, player, position})
   end
 
+  @spec get_status(atom | pid | {atom, any} | {:via, atom, any}) :: any
   def get_status(session_pid) do
     GenServer.call(session_pid, :get_status)
   end
