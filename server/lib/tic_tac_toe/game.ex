@@ -46,7 +46,7 @@ defmodule TicTacToe.Game do
   """
   @spec can_move?(%TicTacToe.Game{}, integer) :: boolean
   def can_move?(game, position) do
-    Enum.at(game.board, position) === nil
+    !get_winner(game.board) && !board_full?(game.board) && Enum.at(game.board, position) === nil
   end
 
   defp is_current_player?(game, player) do

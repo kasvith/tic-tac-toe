@@ -10,8 +10,8 @@ defmodule TicTacToe.Session do
     GenServer.call(session_pid, {:move, player, position})
   end
 
-  def get_game(session_pid) do
-    GenServer.call(session_pid, :get)
+  def get_status(session_pid) do
+    GenServer.call(session_pid, :get_status)
   end
 
   # server
@@ -40,7 +40,16 @@ defmodule TicTacToe.Session do
   end
 
   @impl GenServer
-  def handle_call(:get, _from, game) do
-    {:reply, game, game}
+  def handle_call(:get_status, _from, game) do
+    {
+      :reply,
+      {
+        :winner,
+        TicTacToe.Game.get_winner(game.board),
+        :board_full,
+        TicTacToe.Game.board_full?(game.board)
+      },
+      game
+    }
   end
 end
