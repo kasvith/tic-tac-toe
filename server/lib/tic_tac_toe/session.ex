@@ -52,23 +52,22 @@ defmodule TicTacToe.Session do
       ) do
     player = Map.get(players, player_id)
 
-    case TicTacToe.Game.move(game, player, position) do
-      {:ok, updated_game} ->
-        {
-          :reply,
-          :ok,
-          %TicTacToe.Session{state | game: updated_game},
-          @timeout_milliseconds
-        }
+    {result, state} =
+      case TicTacToe.Game.move(game, player, position) do
+        {:ok, updated_game} ->
+          {
+            :ok,
+            %TicTacToe.Session{state | game: updated_game}
+          }
 
-      {:error, reason} ->
-        {
-          :reply,
-          {:error, reason},
-          state,
-          @timeout_milliseconds
-        }
-    end
+        {:error, reason} ->
+          {
+            {:error, reason},
+            state
+          }
+      end
+
+    {:reply, result, state, @timeout_milliseconds}
   end
 
   @impl GenServer
