@@ -99,7 +99,7 @@ defmodule TicTacToe.Session do
 
   @impl GenServer
   def handle_call({:join_game, _player_id}, _from, %TicTacToe.Session{players: players} = state)
-      when is_map(players) and map_size(players) >= 2 do
+      when is_map(players) and map_size(players) == 2 do
     {
       :reply,
       {:error, "room full"},
