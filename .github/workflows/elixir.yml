@@ -10,6 +10,8 @@ jobs:
   build:
     name: Build and test
     runs-on: ubuntu-latest
+    env:
+      working-directory: ./server
 
     steps:
       - uses: actions/checkout@v2
@@ -18,8 +20,6 @@ jobs:
         with:
           elixir-version: "1.11.3" # Define the elixir version [required]
           otp-version: "22.3" # Define the OTP version [required]
-      - name: Switch directory
-        run: cd server && ls
       - name: Restore dependencies cache
         uses: actions/cache@v2
         with:
