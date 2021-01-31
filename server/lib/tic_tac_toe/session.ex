@@ -2,6 +2,8 @@ defmodule TicTacToe.Session do
   require Logger
   use GenServer, restart: :temporary
 
+  defstruct [:session_id, game: TicTacToe.Game.new(), players: %{}]
+
   # 10 mins
   @timeout 600_000
 
@@ -25,20 +27,24 @@ defmodule TicTacToe.Session do
     GenServer.call(session_pid, :get_game)
   end
 
+  def join_game(session_pid, player_id) do
+    GenServer.call(session_pid, {:join_game, player_id})
+  end
+
   # server
   @impl GenServer
   def init(session_id) do
-    {:ok, {session_id, TicTacToe.Game.new()}, @timeout}
+    {:ok, %TicTacToe.Session{session_id: session_id}, @timeout}
   end
 
   @impl GenServer
-  def handle_call({:move, player, position}, _from, {session_id, game}) do
+  def handle_call({:move, player, position}, _from, %{game: game} = state) do
     case TicTacToe.Game.move(game, player, position) do
       {:ok, new_game} ->
         {
           :reply,
           :ok,
-          {session_id, new_game},
+          %TicTacToe.Session{state | game: new_game},
           @timeout
         }
 
@@ -46,14 +52,14 @@ defmodule TicTacToe.Session do
         {
           :reply,
           {:error, reason},
-          {session_id, game},
+          state,
           @timeout
         }
     end
   end
 
   @impl GenServer
-  def handle_call(:get_status, _from, {session_id, game}) do
+  def handle_call(:get_status, _from, %{game: game} = state) do
     {
       :reply,
       {
@@ -64,24 +70,34 @@ defmodule TicTacToe.Session do
         :player,
         game.current_player
       },
-      {session_id, game},
+      state,
       @timeout
     }
   end
 
   @impl GenServer
-  def handle_call(:get_game, _from, {session_id, game}) do
+  def handle_call(:get_game, _from, %{game: game} = state) do
     {
       :reply,
       game,
-      {session_id, game},
+      state,
       @timeout
     }
   end
 
   @impl GenServer
-  def handle_info(:timeout, {session_id, game}) do
+  def handle_call(:join_game, _from, %{game: game} = state) do
+    {
+      :reply,
+      game,
+      state,
+      @timeout
+    }
+  end
+
+  @impl GenServer
+  def handle_info(:timeout, %{session_id: session_id} = state) do
     Logger.info("Ending game session #{session_id} due to inactivity")
-    {:stop, :normal, {session_id, game}}
+    {:stop, :normal, state}
   end
 end
