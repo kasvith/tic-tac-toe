@@ -53,11 +53,11 @@ defmodule TicTacToe.Session do
     player = Map.get(players, player_id)
 
     case TicTacToe.Game.move(game, player, position) do
-      {:ok, new_game} ->
+      {:ok, updated_game} ->
         {
           :reply,
           :ok,
-          %TicTacToe.Session{state | game: new_game},
+          %TicTacToe.Session{state | game: updated_game},
           @timeout_milliseconds
         }
 
