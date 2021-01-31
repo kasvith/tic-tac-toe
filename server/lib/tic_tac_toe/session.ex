@@ -5,7 +5,7 @@ defmodule TicTacToe.Session do
   defstruct [:session_id, game: TicTacToe.Game.new(), players: %{}]
 
   # 10 mins
-  @timeout 600_000
+  @timeout_milliseconds 10 * 60 * 1000
 
   # client
   @spec start_link(String.t()) :: :ignore | {:error, any} | {:ok, pid}
@@ -15,12 +15,12 @@ defmodule TicTacToe.Session do
 
   @spec move(atom | pid | {atom, any} | {:via, atom, any}, String.t(), integer()) :: any
   def move(session_pid, player_id, position) do
-    GenServer.call(session_pid, {:move, player_id, position}, @timeout)
+    GenServer.call(session_pid, {:move, player_id, position}, @timeout_milliseconds)
   end
 
   @spec get_status(atom | pid | {atom, any} | {:via, atom, any}) :: any
   def get_status(session_pid) do
-    GenServer.call(session_pid, :get_status, @timeout)
+    GenServer.call(session_pid, :get_status, @timeout_milliseconds)
   end
 
   @spec get_game(atom | pid | {atom, any} | {:via, atom, any}) :: any
@@ -41,7 +41,7 @@ defmodule TicTacToe.Session do
   # server
   @impl GenServer
   def init(session_id) do
-    {:ok, %TicTacToe.Session{session_id: session_id}, @timeout}
+    {:ok, %TicTacToe.Session{session_id: session_id}, @timeout_milliseconds}
   end
 
   @impl GenServer
@@ -58,7 +58,7 @@ defmodule TicTacToe.Session do
           :reply,
           :ok,
           %TicTacToe.Session{state | game: new_game},
-          @timeout
+          @timeout_milliseconds
         }
 
       {:error, reason} ->
@@ -66,7 +66,7 @@ defmodule TicTacToe.Session do
           :reply,
           {:error, reason},
           state,
-          @timeout
+          @timeout_milliseconds
         }
     end
   end
@@ -84,7 +84,7 @@ defmodule TicTacToe.Session do
         game.current_player
       },
       state,
-      @timeout
+      @timeout_milliseconds
     }
   end
 
@@ -94,7 +94,7 @@ defmodule TicTacToe.Session do
       :reply,
       game,
       state,
-      @timeout
+      @timeout_milliseconds
     }
   end
 
@@ -105,7 +105,7 @@ defmodule TicTacToe.Session do
       :reply,
       {:error, "room full"},
       state,
-      @timeout
+      @timeout_milliseconds
     }
   end
 
@@ -116,7 +116,7 @@ defmodule TicTacToe.Session do
         :reply,
         {:ok, Map.get(players, player_id)},
         state,
-        @timeout
+        @timeout_milliseconds
       }
     else
       sign = get_player_sign(players)
@@ -126,7 +126,7 @@ defmodule TicTacToe.Session do
         :reply,
         {:ok, sign},
         %TicTacToe.Session{state | players: new_players},
-        @timeout
+        @timeout_milliseconds
       }
     end
   end
@@ -149,7 +149,7 @@ defmodule TicTacToe.Session do
     {
       :noreply,
       %TicTacToe.Session{state | players: Map.delete(players, player_id)},
-      @timeout
+      @timeout_milliseconds
     }
   end
 
