@@ -1,5 +1,6 @@
 defmodule TicTacToe.Lobby do
   use GenServer
+  import Utils.String
 
   def start_link() do
     GenServer.start_link(__MODULE__, nil, name: __MODULE__)
@@ -23,15 +24,19 @@ defmodule TicTacToe.Lobby do
     # id = create_game_session_id(store, name)
   end
 
-  defp create_session_id do
+  defp create_session(store, name) do
+    if empty?(name) do
+      generate_game_session_id(store)
+    else
+    end
   end
 
   defp generate_game_session_id(store) do
     id = Nanoid.generate(10)
 
     case Map.has_key?(store, id) do
-      true -> generate_game_session_id(store)
       false -> id
+      true -> generate_game_session_id(store)
     end
   end
 end

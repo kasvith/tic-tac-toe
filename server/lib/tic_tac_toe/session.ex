@@ -110,24 +110,23 @@ defmodule TicTacToe.Session do
 
   @impl GenServer
   def handle_call({:join_game, player_id}, _from, %TicTacToe.Session{players: players} = state) do
-    if registered?(players, player_id) do
-      {
-        :reply,
-        {:ok, Map.get(players, player_id)},
-        state,
-        @timeout_milliseconds
-      }
-    else
-      sign = get_player_sign(players)
-      new_players = Map.put(players, player_id, sign)
+    {reply, state} =
+      case registered?(players, player_id) do
+        true ->
+          {{:ok, Map.get(players, player_id)}, state}
 
-      {
-        :reply,
-        {:ok, sign},
-        %TicTacToe.Session{state | players: new_players},
-        @timeout_milliseconds
-      }
-    end
+        false ->
+          sign = get_player_sign(players)
+          new_players = Map.put(players, player_id, sign)
+          {{:ok, sign}, %TicTacToe.Session{state | players: new_players}}
+      end
+
+    {
+      :reply,
+      reply,
+      state,
+      @timeout_milliseconds
+    }
   end
 
   defp registered?(players, player_id) do
