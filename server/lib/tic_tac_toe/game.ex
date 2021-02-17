@@ -1,10 +1,10 @@
 defmodule TicTacToe.Game do
   @board for _ <- 1..9, do: nil
-  @player "X"
-  @opponent "O"
+  @player_x "X"
+  @player_o "O"
 
   defstruct board: @board,
-            current_player: @player
+            current_player: @player_x
 
   @doc """
   Creates a new game
@@ -20,7 +20,7 @@ defmodule TicTacToe.Game do
   @spec move(%TicTacToe.Game{}, String.t(), integer()) ::
           {:error, String.t()} | {:ok, %TicTacToe.Game{}}
   def move(game, player, position)
-      when player in [@player, @opponent] and
+      when player in [@player_x, @player_o] and
              is_number(position) and
              position >= 0 and position <= 8 do
     if is_current_player?(game, player) && can_move?(game, position) do
@@ -54,10 +54,10 @@ defmodule TicTacToe.Game do
   end
 
   @spec next_player(String.t()) :: String.t()
-  defp next_player(player) when player in [@player, @opponent] do
+  defp next_player(player) when player in [@player_x, @player_o] do
     case player do
-      @player -> @opponent
-      @opponent -> @player
+      @player_x -> @player_o
+      @player_o -> @player_x
     end
   end
 
