@@ -18,11 +18,6 @@ defmodule TicTacToe.Session do
     GenServer.call(session_pid, {:move, player_id, position}, @timeout_milliseconds)
   end
 
-  @spec get_status(atom | pid | {atom, any} | {:via, atom, any}) :: any
-  def get_status(session_pid) do
-    GenServer.call(session_pid, :get_status, @timeout_milliseconds)
-  end
-
   @spec get_game(atom | pid | {atom, any} | {:via, atom, any}) :: any
   def get_game(session_pid) do
     GenServer.call(session_pid, :get_game)
@@ -68,23 +63,6 @@ defmodule TicTacToe.Session do
       end
 
     {:reply, result, state, @timeout_milliseconds}
-  end
-
-  @impl GenServer
-  def handle_call(:get_status, _from, %TicTacToe.Session{game: game} = state) do
-    {
-      :reply,
-      {
-        :winner,
-        TicTacToe.Game.get_winner(game.board),
-        :board_full,
-        TicTacToe.Game.board_full?(game.board),
-        :player,
-        game.current_player
-      },
-      state,
-      @timeout_milliseconds
-    }
   end
 
   @impl GenServer

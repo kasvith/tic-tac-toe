@@ -46,16 +46,6 @@ defmodule TicTacToe.Session.Test do
     assert {:error, _reason} = TicTacToe.Session.move(pid, "2", 0)
   end
 
-  test "gives correct status after a move" do
-    {:ok, pid} = TicTacToe.Session.start_link("game1")
-    TicTacToe.Session.join_game(pid, "1")
-    TicTacToe.Session.join_game(pid, "2")
-
-    assert :ok = TicTacToe.Session.move(pid, "1", 0)
-
-    assert {:winner, nil, :board_full, false, :player, "O"} = TicTacToe.Session.get_status(pid)
-  end
-
   test "gets game" do
     {:ok, pid} = TicTacToe.Session.start_link("game1")
 
