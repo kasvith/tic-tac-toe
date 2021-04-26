@@ -1,7 +1,7 @@
 defmodule TicTacToe.Game do
   @board for _ <- 1..9, do: nil
-  @player_x "X"
-  @player_o "O"
+  @player_x :x
+  @player_o :o
 
   defstruct board: @board,
             current_player: @player_x

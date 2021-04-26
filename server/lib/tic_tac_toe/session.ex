@@ -112,11 +112,11 @@ defmodule TicTacToe.Session do
   end
 
   defp get_player_sign(players) do
-    has_x = players |> Map.values() |> Enum.member?("X")
+    has_x = players |> Map.values() |> Enum.member?(:x)
 
     case has_x do
-      true -> "O"
-      false -> "X"
+      true -> :o
+      false -> :x
     end
   end
 
