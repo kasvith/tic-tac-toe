@@ -1,8 +1,16 @@
 defmodule TicTacToe.Game do
+  @type position :: integer()
+  @type player_type :: :x | :o
+  @type board_type :: list(player_type())
+
   @board for _ <- 1..9, do: nil
   @player_x :x
   @player_o :o
 
+  @type t :: %__MODULE__{
+          board: board_type(),
+          current_player: player_type()
+        }
   defstruct board: @board,
             current_player: @player_x
 
@@ -17,8 +25,8 @@ defmodule TicTacToe.Game do
   @doc """
   moves `player` to `position` in `game`
   """
-  @spec move(%TicTacToe.Game{}, String.t(), integer()) ::
-          {:error, String.t()} | {:ok, %TicTacToe.Game{}}
+  @spec move(t(), player_type(), integer()) ::
+          {:error, String.t()} | {:ok, t()}
   def move(game, player, position)
       when player in [@player_x, @player_o] and
              is_number(position) and
@@ -44,16 +52,16 @@ defmodule TicTacToe.Game do
   @doc """
   can move to the `position`
   """
-  @spec can_move?(%TicTacToe.Game{}, integer) :: boolean
-  def can_move?(game, position) do
-    !get_winner(game.board) && !board_full?(game.board) && Enum.at(game.board, position) === nil
+  @spec can_move?(t(), integer()) :: boolean()
+  def can_move?(%TicTacToe.Game{board: board}, position) do
+    !get_winner(board) && !board_full?(board) && Enum.at(board, position) === nil
   end
 
   defp is_current_player?(game, player) do
     game.current_player === player
   end
 
-  @spec next_player(String.t()) :: String.t()
+  @spec next_player(player_type()) :: player_type()
   defp next_player(player) when player in [@player_x, @player_o] do
     case player do
       @player_x -> @player_o
@@ -64,7 +72,7 @@ defmodule TicTacToe.Game do
   @doc """
   get the winner of game `board`
   """
-  @spec get_winner(list()) :: String.t() | nil
+  @spec get_winner(board_type()) :: player_type() | nil
   def get_winner([a, a, a, _, _, _, _, _, _] = _board) when a != nil, do: a
   def get_winner([_, _, _, a, a, a, _, _, _] = _board) when a != nil, do: a
   def get_winner([_, _, _, _, _, _, a, a, a] = _board) when a != nil, do: a
@@ -78,7 +86,7 @@ defmodule TicTacToe.Game do
   @doc """
   is `board` full
   """
-  @spec board_full?(list()) :: boolean
+  @spec board_full?(board_type()) :: boolean
   def board_full?(board) do
     !Enum.any?(board, &is_nil/1)
   end
