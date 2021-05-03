@@ -13,22 +13,22 @@ defmodule TicTacToe.Session do
     GenServer.start_link(__MODULE__, session_id)
   end
 
-  @spec move(atom | pid | {atom, any} | {:via, atom, any}, String.t(), integer()) :: any
+  @spec move(pid(), String.t(), integer()) :: any
   def move(session_pid, player_id, position) do
     GenServer.call(session_pid, {:move, player_id, position}, @timeout_milliseconds)
   end
 
-  @spec get_game(atom | pid | {atom, any} | {:via, atom, any}) :: any
+  @spec get_game(pid()) :: any
   def get_game(session_pid) do
     GenServer.call(session_pid, :get_game)
   end
 
-  @spec join_game(atom | pid | {atom, any} | {:via, atom, any}, any) :: any
+  @spec join_game(pid, String.t()) :: any
   def join_game(session_pid, player_id) do
     GenServer.call(session_pid, {:join_game, player_id})
   end
 
-  @spec leave_game(atom | pid | {atom, any} | {:via, atom, any}, any) :: any
+  @spec leave_game(pid(), String.t()) :: any
   def leave_game(session_pid, player_id) do
     GenServer.cast(session_pid, {:leave_game, player_id})
   end
