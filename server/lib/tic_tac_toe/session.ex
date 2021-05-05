@@ -2,7 +2,17 @@ defmodule TicTacToe.Session do
   require Logger
   use GenServer, restart: :transient
 
-  defstruct [:session_id, game: TicTacToe.Game.new(), players: %{}]
+  @type t :: __MODULE__ {
+    session_id: String.t(),
+    game: TicTacToe.Game.t(),
+    x:
+  }
+
+  defstruct session_id: nil,
+            game: nil,
+            x: nil,
+            o: nil,
+            stats: %{}
 
   # 10 mins
   @timeout_milliseconds 10 * 60 * 1000
