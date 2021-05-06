@@ -2,16 +2,18 @@ defmodule TicTacToe.Session do
   require Logger
   use GenServer, restart: :transient
 
-  @type t :: __MODULE__ {
-    session_id: String.t(),
-    game: TicTacToe.Game.t(),
-    x:
-  }
+  @type t :: %__MODULE__{
+          session_id: String.t(),
+          game: TicTacToe.Game.t(),
+          player_x: String.t(),
+          player_o: String.t(),
+          stats: %{optional(String.t()) => integer()}
+        }
 
   defstruct session_id: nil,
             game: nil,
-            x: nil,
-            o: nil,
+            player_x: nil,
+            player_o: nil,
             stats: %{}
 
   # 10 mins
@@ -73,6 +75,13 @@ defmodule TicTacToe.Session do
       end
 
     {:reply, result, state, @timeout_milliseconds}
+  end
+
+  defp get_player_sign(player_id) do
+    case player_id do
+      player ->
+        nil
+    end
   end
 
   @impl GenServer
