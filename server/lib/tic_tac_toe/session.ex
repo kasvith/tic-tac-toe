@@ -91,22 +91,9 @@ defmodule TicTacToe.Session do
   def handle_call(
         {:join_game, player_id},
         _from,
-        %TicTacToe.Session{player_x: player_x, player_o: player_o} = state
+        %TicTacToe.Session{} = state
       ) do
-    {reply, state} =
-      cond do
-        player_x == nil ->
-          {{:ok, :x}, %TicTacToe.Session{state | player_x: player_id}}
-
-        player_o == nil ->
-          {{:ok, :o}, %TicTacToe.Session{state | player_o: player_id}}
-
-        player_o == player_id || player_x == player_id ->
-          {{:ok, get_player_sign(state, player_id)}, state}
-
-        true ->
-          {{:error, "room full"}, state}
-      end
+    {reply, state} = join_game_session(state, player_id)
 
     {
       :reply,
@@ -141,6 +128,32 @@ defmodule TicTacToe.Session do
   def handle_info(:timeout, %TicTacToe.Session{session_id: session_id} = state) do
     Logger.info("Ending game session #{session_id} due to inactivity")
     {:stop, :normal, state}
+  end
+
+  defp join_game_session(%TicTacToe.Session{player_x: nil} = state, player_id) do
+    {{:ok, :x}, %TicTacToe.Session{state | player_x: player_id}}
+  end
+
+  defp join_game_session(%TicTacToe.Session{player_o: nil} = state, player_id) do
+    {{:ok, :o}, %TicTacToe.Session{state | player_o: player_id}}
+  end
+
+  defp join_game_session(
+         %TicTacToe.Session{player_x: player_id} = state,
+         player_id
+       ) do
+    {{:ok, :x}, state}
+  end
+
+  defp join_game_session(
+         %TicTacToe.Session{player_o: player_id} = state,
+         player_id
+       ) do
+    {{:ok, :o}, state}
+  end
+
+  defp join_game_session(%TicTacToe.Session{} = state, _player_id) do
+    {{:error, "room full"}, state}
   end
 
   defp get_player_sign(
