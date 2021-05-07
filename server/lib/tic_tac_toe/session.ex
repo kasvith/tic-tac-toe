@@ -11,7 +11,7 @@ defmodule TicTacToe.Session do
         }
 
   defstruct session_id: nil,
-            game: nil,
+            game: TicTacToe.Game.new(),
             player_x: nil,
             player_o: nil,
             stats: %{}
@@ -102,7 +102,7 @@ defmodule TicTacToe.Session do
           {{:ok, :o}, %TicTacToe.Session{state | player_o: player_id}}
 
         player_o == player_id || player_x == player_id ->
-          {{:ok, :o}, state}
+          {{:ok, get_player_sign(state, player_id)}, state}
 
         true ->
           {{:error, "room full"}, state}

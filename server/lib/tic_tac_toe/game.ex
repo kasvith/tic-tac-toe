@@ -86,7 +86,7 @@ defmodule TicTacToe.Game do
   @doc """
   is `board` full
   """
-  @spec board_full?(t()) :: boolean
+  @spec board_full?(board_type()) :: boolean
   def board_full?(board) do
     !Enum.any?(board, &is_nil/1)
   end
