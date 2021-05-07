@@ -93,9 +93,11 @@ defmodule TicTacToe.Game do
 
   @spec get_state(t()) :: {atom()}
   def get_state(%TicTacToe.Game{board: board}) do
+    winner = get_winner(board)
+
     cond do
       get_winner(board) != nil ->
-        {:winner, get_winner(board)}
+        {:winner, winner}
 
       board_full?(board) == true ->
         {:tie}
