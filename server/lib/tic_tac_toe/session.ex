@@ -3,10 +3,10 @@ defmodule TicTacToe.Session do
   use GenServer, restart: :transient
 
   @type t :: %__MODULE__{
-          session_id: String.t(),
-          game: TicTacToe.Game.t(),
-          player_x: String.t(),
-          player_o: String.t(),
+          session_id: String.t() | nil,
+          game: TicTacToe.Game.t() | nil,
+          player_x: String.t() | nil,
+          player_o: String.t() | nil,
           stats: %{optional(String.t()) => integer()}
         }
 
@@ -32,17 +32,17 @@ defmodule TicTacToe.Session do
 
   @spec get_game(pid()) :: any
   def get_game(session_pid) do
-    GenServer.call(session_pid, :get_game)
+    GenServer.call(session_pid, {:get_game})
   end
 
-  @spec join_game(pid, String.t()) :: any
+  @spec join_game(pid(), String.t()) :: any
   def join_game(session_pid, player_id) do
     GenServer.call(session_pid, {:join_game, player_id})
   end
 
   @spec leave_game(pid(), String.t()) :: any
   def leave_game(session_pid, player_id) do
-    GenServer.cast(session_pid, {:leave_game, player_id})
+    GenServer.call(session_pid, {:leave_game, player_id})
   end
 
   # server
@@ -55,9 +55,9 @@ defmodule TicTacToe.Session do
   def handle_call(
         {:move, player_id, position},
         _from,
-        %TicTacToe.Session{game: game, players: players} = state
+        %TicTacToe.Session{game: game} = state
       ) do
-    player = Map.get(players, player_id)
+    player = get_player_sign(state, player_id)
 
     {result, state} =
       case TicTacToe.Game.move(game, player, position) do
@@ -77,15 +77,8 @@ defmodule TicTacToe.Session do
     {:reply, result, state, @timeout_milliseconds}
   end
 
-  defp get_player_sign(player_id) do
-    case player_id do
-      player ->
-        nil
-    end
-  end
-
   @impl GenServer
-  def handle_call(:get_game, _from, %TicTacToe.Session{game: game} = state) do
+  def handle_call({:get_game}, _from, %TicTacToe.Session{game: game} = state) do
     {
       :reply,
       game,
@@ -95,27 +88,24 @@ defmodule TicTacToe.Session do
   end
 
   @impl GenServer
-  def handle_call({:join_game, _player_id}, _from, %TicTacToe.Session{players: players} = state)
-      when is_map(players) and map_size(players) == 2 do
-    {
-      :reply,
-      {:error, "room full"},
-      state,
-      @timeout_milliseconds
-    }
-  end
-
-  @impl GenServer
-  def handle_call({:join_game, player_id}, _from, %TicTacToe.Session{players: players} = state) do
+  def handle_call(
+        {:join_game, player_id},
+        _from,
+        %TicTacToe.Session{player_x: player_x, player_o: player_o} = state
+      ) do
     {reply, state} =
-      case registered?(players, player_id) do
-        true ->
-          {{:ok, Map.get(players, player_id)}, state}
+      cond do
+        player_x == nil ->
+          {{:ok, :x}, %TicTacToe.Session{state | player_x: player_id}}
 
-        false ->
-          sign = get_player_sign(players)
-          new_players = Map.put(players, player_id, sign)
-          {{:ok, sign}, %TicTacToe.Session{state | players: new_players}}
+        player_o == nil ->
+          {{:ok, :o}, %TicTacToe.Session{state | player_o: player_id}}
+
+        player_o == player_id || player_x == player_id ->
+          {{:ok, :o}, state}
+
+        true ->
+          {{:error, "room full"}, state}
       end
 
     {
@@ -126,24 +116,23 @@ defmodule TicTacToe.Session do
     }
   end
 
-  defp registered?(players, player_id) do
-    Map.has_key?(players, player_id)
-  end
-
-  defp get_player_sign(players) do
-    has_x = players |> Map.values() |> Enum.member?(:x)
-
-    case has_x do
-      true -> :o
-      false -> :x
-    end
-  end
-
   @impl GenServer
-  def handle_cast({:leave_game, player_id}, %TicTacToe.Session{players: players} = state) do
+  def handle_call(
+        {:leave_game, player_id},
+        _from,
+        %TicTacToe.Session{player_x: player_x, player_o: player_o} = state
+      ) do
+    new_state =
+      case player_id do
+        ^player_x -> %TicTacToe.Session{state | player_x: nil}
+        ^player_o -> %TicTacToe.Session{state | player_o: nil}
+        _ -> state
+      end
+
     {
-      :noreply,
-      %TicTacToe.Session{state | players: Map.delete(players, player_id)},
+      :reply,
+      {:ok},
+      new_state,
       @timeout_milliseconds
     }
   end
@@ -152,5 +141,15 @@ defmodule TicTacToe.Session do
   def handle_info(:timeout, %TicTacToe.Session{session_id: session_id} = state) do
     Logger.info("Ending game session #{session_id} due to inactivity")
     {:stop, :normal, state}
+  end
+
+  defp get_player_sign(
+         %TicTacToe.Session{player_x: player_x, player_o: player_o},
+         player_id
+       ) do
+    case player_id do
+      ^player_x -> :x
+      ^player_o -> :o
+    end
   end
 end
