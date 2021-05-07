@@ -157,12 +157,16 @@ defmodule TicTacToe.Session do
   end
 
   defp get_player_sign(
-         %TicTacToe.Session{player_x: player_x, player_o: player_o},
+         %TicTacToe.Session{player_x: player_id},
          player_id
        ) do
-    case player_id do
-      ^player_x -> :x
-      ^player_o -> :o
-    end
+    :x
+  end
+
+  defp get_player_sign(
+         %TicTacToe.Session{player_o: player_id},
+         player_id
+       ) do
+    :o
   end
 end
