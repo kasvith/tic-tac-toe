@@ -5,7 +5,7 @@ defmodule TicTacToe.Game.Test do
     game = TicTacToe.Game.new()
     assert game.board == [nil, nil, nil, nil, nil, nil, nil, nil, nil]
     assert game.current_player == :x
-    assert TicTacToe.Game.get_state(game) == {:ok, :continue}
+    assert TicTacToe.Game.get_state(game) == {:continue}
   end
 
   test "allow valid moves" do

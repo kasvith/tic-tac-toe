@@ -91,17 +91,17 @@ defmodule TicTacToe.Game do
     !Enum.any?(board, &is_nil/1)
   end
 
-  @spec get_state(t()) :: {:ok, atom()}
+  @spec get_state(t()) :: {atom()}
   def get_state(%TicTacToe.Game{board: board}) do
     cond do
       get_winner(board) != nil ->
-        {:ok, :winner}
+        {:winner, get_winner(board)}
 
       board_full?(board) == true ->
-        {:ok, :tie}
+        {:tie}
 
       true ->
-        {:ok, :continue}
+        {:continue}
     end
   end
 end
