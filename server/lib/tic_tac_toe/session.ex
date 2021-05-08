@@ -64,7 +64,11 @@ defmodule TicTacToe.Session do
         {:ok, updated_game} ->
           {
             :ok,
-            %TicTacToe.Session{state | game: updated_game}
+            %TicTacToe.Session{
+              state
+              | game: updated_game,
+                stats: update_game_scores(state, updated_game)
+            }
           }
 
         {:error, reason} ->
@@ -133,11 +137,21 @@ defmodule TicTacToe.Session do
 
   @spec join_game_session(t(), String.t()) :: {{atom(), :x | :o}, t()}
   defp join_game_session(%TicTacToe.Session{player_x: nil} = state, player_id) do
-    {{:ok, :x}, %TicTacToe.Session{state | player_x: player_id}}
+    {{:ok, :x},
+     %TicTacToe.Session{
+       state
+       | player_x: player_id,
+         stats: Map.put_new(state.stats, player_id, 0)
+     }}
   end
 
   defp join_game_session(%TicTacToe.Session{player_o: nil} = state, player_id) do
-    {{:ok, :o}, %TicTacToe.Session{state | player_o: player_id}}
+    {{:ok, :o},
+     %TicTacToe.Session{
+       state
+       | player_o: player_id,
+         stats: Map.put_new(state.stats, player_id, 0)
+     }}
   end
 
   defp join_game_session(
@@ -181,5 +195,25 @@ defmodule TicTacToe.Session do
          player_id
        ) do
     :o
+  end
+
+  def update_game_scores(%TicTacToe.Session{} = session, %TicTacToe.Game{} = game) do
+    case TicTacToe.Game.get_state(game) do
+      {:winner, winner} ->
+        update_winner(session, winner)
+
+      _ ->
+        session
+    end
+  end
+
+  defp update_winner(%TicTacToe.Session{stats: stats} = session, winner) do
+    case winner do
+      :x ->
+        Map.update(stats, session.player_x, 1, fn old -> old + 1 end)
+
+      :o ->
+        Map.update(stats, session.player_o, 1, fn old -> old + 1 end)
+    end
   end
 end

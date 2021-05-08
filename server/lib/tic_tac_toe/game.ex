@@ -91,7 +91,7 @@ defmodule TicTacToe.Game do
     !Enum.any?(board, &is_nil/1)
   end
 
-  @spec get_state(t()) :: {atom()}
+  @spec get_state(t()) :: {atom()} | {atom(), player_type()}
   def get_state(%TicTacToe.Game{board: board}) do
     winner = get_winner(board)
 
