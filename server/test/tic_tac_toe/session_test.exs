@@ -49,6 +49,6 @@ defmodule TicTacToe.Session.Test do
   test "gets game" do
     {:ok, pid} = TicTacToe.Session.start_link("game1")
 
-    assert TicTacToe.Game.new() == TicTacToe.Session.get_game(pid)
+    assert TicTacToe.Session.get_game(pid) == nil
   end
 end

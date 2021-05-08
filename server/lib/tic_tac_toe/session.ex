@@ -11,7 +11,7 @@ defmodule TicTacToe.Session do
         }
 
   defstruct session_id: nil,
-            game: TicTacToe.Game.new(),
+            game: nil,
             player_x: nil,
             player_o: nil,
             stats: %{}
@@ -94,6 +94,7 @@ defmodule TicTacToe.Session do
         %TicTacToe.Session{} = state
       ) do
     {reply, state} = join_game_session(state, player_id)
+    state = start_game_if_not(state)
 
     {
       :reply,
@@ -130,6 +131,7 @@ defmodule TicTacToe.Session do
     {:stop, :normal, state}
   end
 
+  @spec join_game_session(t(), String.t()) :: {{atom(), :x | :o}, t()}
   defp join_game_session(%TicTacToe.Session{player_x: nil} = state, player_id) do
     {{:ok, :x}, %TicTacToe.Session{state | player_x: player_id}}
   end
@@ -154,6 +156,17 @@ defmodule TicTacToe.Session do
 
   defp join_game_session(%TicTacToe.Session{} = state, _player_id) do
     {{:error, "room full"}, state}
+  end
+
+  defp start_game_if_not(
+         %TicTacToe.Session{player_x: player_x, player_o: player_o, game: game} = state
+       )
+       when player_x != nil and player_o != nil and game == nil do
+    %TicTacToe.Session{state | game: TicTacToe.Game.new()}
+  end
+
+  defp start_game_if_not(%TicTacToe.Session{} = state) do
+    state
   end
 
   defp get_player_sign(
