@@ -35,6 +35,11 @@ defmodule TicTacToe.Session do
     GenServer.call(session_pid, {:get_game}, @timeout_milliseconds)
   end
 
+  @spec get_stats(pid()) :: any
+  def get_stats(session_pid) do
+    GenServer.call(session_pid, {:get_stats}, @timeout_milliseconds)
+  end
+
   @spec join_game(pid(), String.t()) :: any
   def join_game(session_pid, player_id) do
     GenServer.call(session_pid, {:join_game, player_id}, @timeout_milliseconds)
@@ -86,6 +91,16 @@ defmodule TicTacToe.Session do
     {
       :reply,
       game,
+      state,
+      @timeout_milliseconds
+    }
+  end
+
+  @impl GenServer
+  def handle_call({:get_stats}, _from, %TicTacToe.Session{stats: stats} = state) do
+    {
+      :reply,
+      stats,
       state,
       @timeout_milliseconds
     }
@@ -197,13 +212,13 @@ defmodule TicTacToe.Session do
     :o
   end
 
-  def update_game_scores(%TicTacToe.Session{} = session, %TicTacToe.Game{} = game) do
+  def update_game_scores(%TicTacToe.Session{stats: stats} = session, %TicTacToe.Game{} = game) do
     case TicTacToe.Game.get_state(game) do
       {:winner, winner} ->
         update_winner(session, winner)
 
       _ ->
-        session
+        stats
     end
   end
 
