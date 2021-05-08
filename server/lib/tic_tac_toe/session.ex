@@ -32,17 +32,17 @@ defmodule TicTacToe.Session do
 
   @spec get_game(pid()) :: any
   def get_game(session_pid) do
-    GenServer.call(session_pid, {:get_game})
+    GenServer.call(session_pid, {:get_game}, @timeout_milliseconds)
   end
 
   @spec join_game(pid(), String.t()) :: any
   def join_game(session_pid, player_id) do
-    GenServer.call(session_pid, {:join_game, player_id})
+    GenServer.call(session_pid, {:join_game, player_id}, @timeout_milliseconds)
   end
 
   @spec leave_game(pid(), String.t()) :: any
   def leave_game(session_pid, player_id) do
-    GenServer.call(session_pid, {:leave_game, player_id})
+    GenServer.call(session_pid, {:leave_game, player_id}, @timeout_milliseconds)
   end
 
   # server
