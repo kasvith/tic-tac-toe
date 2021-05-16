@@ -50,10 +50,6 @@ defmodule TicTacToe.Session do
     GenServer.call(session_pid, {:leave_game, player_id}, @timeout_milliseconds)
   end
 
-  defp via_tuple(session_id) do
-    {:via, Registry, {TicTacToe.SessionRegistry, session_id}}
-  end
-
   # server
   @impl GenServer
   def init(session_id) do
