@@ -32,9 +32,9 @@ defmodule TicTacToe.Session.Test do
     TicTacToe.Session.join_game(pid, "1")
     TicTacToe.Session.join_game(pid, "2")
 
-    assert :ok = TicTacToe.Session.move(pid, "1", 0)
-    assert :ok = TicTacToe.Session.move(pid, "2", 1)
-    assert :ok = TicTacToe.Session.move(pid, "1", 8)
+    assert {:ok, "2"} = TicTacToe.Session.move(pid, "1", 0)
+    assert {:ok, "1"} = TicTacToe.Session.move(pid, "2", 1)
+    assert {:ok, "2"} = TicTacToe.Session.move(pid, "1", 8)
   end
 
   test "update winners" do
@@ -42,11 +42,11 @@ defmodule TicTacToe.Session.Test do
     TicTacToe.Session.join_game(pid, "1")
     TicTacToe.Session.join_game(pid, "2")
 
-    assert :ok = TicTacToe.Session.move(pid, "1", 0)
-    assert :ok = TicTacToe.Session.move(pid, "2", 1)
-    assert :ok = TicTacToe.Session.move(pid, "1", 6)
-    assert :ok = TicTacToe.Session.move(pid, "2", 2)
-    assert :ok = TicTacToe.Session.move(pid, "1", 3)
+    assert {:ok, "2"} = TicTacToe.Session.move(pid, "1", 0)
+    assert {:ok, "1"} = TicTacToe.Session.move(pid, "2", 1)
+    assert {:ok, "2"} = TicTacToe.Session.move(pid, "1", 6)
+    assert {:ok, "1"} = TicTacToe.Session.move(pid, "2", 2)
+    assert {:ok, "2"} = TicTacToe.Session.move(pid, "1", 3)
     assert %{"1" => 1, "2" => 0} = TicTacToe.Session.get_stats(pid)
   end
 
@@ -55,7 +55,7 @@ defmodule TicTacToe.Session.Test do
     TicTacToe.Session.join_game(pid, "1")
     TicTacToe.Session.join_game(pid, "2")
 
-    assert :ok = TicTacToe.Session.move(pid, "1", 0)
+    assert {:ok, "2"} = TicTacToe.Session.move(pid, "1", 0)
     assert {:error, _reason} = TicTacToe.Session.move(pid, "2", 0)
   end
 

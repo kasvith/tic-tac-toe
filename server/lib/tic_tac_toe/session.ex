@@ -68,7 +68,7 @@ defmodule TicTacToe.Session do
       case TicTacToe.Game.move(game, player, position) do
         {:ok, updated_game} ->
           {
-            :ok,
+            {:ok, get_player_id(state, updated_game.current_player)},
             %TicTacToe.Session{
               state
               | game: updated_game,
@@ -196,6 +196,14 @@ defmodule TicTacToe.Session do
 
   defp start_game_if_not(%TicTacToe.Session{} = state) do
     state
+  end
+
+  defp get_player_id(%TicTacToe.Session{} = state, sign) when sign == :x do
+    state.player_x
+  end
+
+  defp get_player_id(%TicTacToe.Session{} = state, sign) when sign == :o do
+    state.player_o
   end
 
   defp get_player_sign(
