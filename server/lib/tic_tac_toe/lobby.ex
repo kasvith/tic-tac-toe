@@ -1,6 +1,5 @@
 defmodule TicTacToe.Lobby do
   use GenServer
-  import Utils.String
 
   def start_link() do
     GenServer.start_link(__MODULE__, nil, name: __MODULE__)
