@@ -151,7 +151,8 @@ defmodule TicTacToe.Session do
   end
 
   @spec join_game_session(t(), String.t()) :: {{atom(), :x | :o}, t()}
-  defp join_game_session(%TicTacToe.Session{player_x: nil} = state, player_id) do
+  defp join_game_session(%TicTacToe.Session{player_x: nil, player_o: o} = state, player_id)
+       when player_id != o do
     {{:ok, :x},
      %TicTacToe.Session{
        state
@@ -160,7 +161,8 @@ defmodule TicTacToe.Session do
      }}
   end
 
-  defp join_game_session(%TicTacToe.Session{player_o: nil} = state, player_id) do
+  defp join_game_session(%TicTacToe.Session{player_o: nil, player_x: x} = state, player_id)
+       when player_id != x do
     {{:ok, :o},
      %TicTacToe.Session{
        state

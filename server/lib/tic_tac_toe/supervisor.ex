@@ -9,7 +9,7 @@ defmodule TicTacToe.Supervisor do
   def init(:ok) do
     children = [
       {Registry, keys: :unique, name: TicTacToe.SessionRegistry},
-      {DynamicSupervisor, strategy: :one_for_one, name: TicTacToe.SessionSupervisor}
+      TicTacToe.SessionSupervisor
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
