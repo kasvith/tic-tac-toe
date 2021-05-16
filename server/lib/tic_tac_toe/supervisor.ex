@@ -8,7 +8,8 @@ defmodule TicTacToe.Supervisor do
   @impl true
   def init(:ok) do
     children = [
-      TicTacToe.Registry
+      {Registry, keys: :unique, name: TicTacToe.SessionRegistry},
+      {DynamicSupervisor, strategy: :one_for_one, name: TicTacToe.SessionSupervisor}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
