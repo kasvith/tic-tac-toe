@@ -2,12 +2,13 @@ defmodule TicTacToe.Lobby do
   use GenServer
   import Utils.String
 
-  def start_link() do
+  def start_link(_) do
+    IO.puts("Lobby starting...")
     GenServer.start_link(__MODULE__, nil, name: __MODULE__)
   end
 
-  def create_session() do
-    GenServer.call(__MODULE__, {:create_session})
+  def create_session(player_id) do
+    GenServer.call(__MODULE__, {:create_session, player_id})
   end
 
   def join_session(session_id, player_id) do
@@ -20,12 +21,25 @@ defmodule TicTacToe.Lobby do
   end
 
   @impl GenServer
-  def handle_call({:create_session}, _from, store) do
-    reply = generate_game_session_id(store)
+  def handle_call({:create_session, player_id}, _from, store) do
+    {:ok, id} = generate_game_session_id(store)
+
+    TicTacToe.SessionSupervisor.get_process(id)
+    TicTacToe.Session.join_game(id, player_id)
 
     {
       :reply,
-      reply,
+      id,
+      store
+    }
+  end
+
+  @impl GenServer
+  def handle_call({:join_session, session_id, player_id}, _from, store) do
+    #  logic for joining a game
+    {
+      :reply,
+      "reply",
       store
     }
   end
