@@ -2,11 +2,6 @@ defmodule TicTacToe.Session.Test do
   use ExUnit.Case
   @moduletag :capture_log
 
-  setup do
-    start_supervised!(TicTacToe.Supervisor)
-    :ok
-  end
-
   test "allow joining a session" do
     TicTacToe.SessionSupervisor.start_child("game1")
     assert {:ok, :x} = TicTacToe.Session.join_game("game1", "1")
