@@ -1,6 +1,6 @@
 defmodule TicTacToe.Session do
   require Logger
-  use GenServer, restart: :transient
+  use GenServer, restart: :temporary
 
   @type id :: String.t()
 
@@ -24,7 +24,8 @@ defmodule TicTacToe.Session do
   def child_spec(session_id) do
     %{
       id: __MODULE__,
-      start: {__MODULE__, :start_link, [session_id]}
+      start: {__MODULE__, :start_link, [session_id]},
+      restart: :temporary
     }
   end
 
