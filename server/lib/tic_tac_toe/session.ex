@@ -2,6 +2,8 @@ defmodule TicTacToe.Session do
   require Logger
   use GenServer, restart: :transient
 
+  @type id :: String.t()
+
   @type t :: %__MODULE__{
           session_id: String.t() | nil,
           game: TicTacToe.Game.t() | nil,
@@ -19,45 +21,58 @@ defmodule TicTacToe.Session do
   # 10 mins
   @timeout_milliseconds 10 * 60 * 1000
 
-  def child_spec(arg) do
-    IO.puts("Using child spec #{inspect(arg)}")
-
+  def child_spec(session_id) do
     %{
       id: __MODULE__,
-      start: {__MODULE__, :start_link, [arg]}
+      start: {__MODULE__, :start_link, [session_id]}
     }
   end
 
+  def start_link([], session_id) do
+    start_link(session_id)
+  end
+
   # client
-  @spec start_link(String.t()) :: :ignore | {:error, any} | {:ok, pid}
-  def start_link(session_id, _opts \\ []) do
-    Logger.info("Starting session #{session_id}")
-    GenServer.start_link(__MODULE__, session_id)
+  @spec start_link(id()) :: :ignore | {:error, any} | {:ok, pid}
+  def start_link(session_id) do
+    Logger.info("Starting session #{inspect(session_id)}")
+    GenServer.start_link(__MODULE__, session_id, name: via_tuple(session_id))
   end
 
-  @spec move(pid(), String.t(), integer()) :: any
-  def move(session_pid, player_id, position) do
-    GenServer.call(session_pid, {:move, player_id, position}, @timeout_milliseconds)
+  @spec move(id(), String.t(), integer()) :: any
+  def move(session_id, player_id, position) do
+    GenServer.call(via_tuple(session_id), {:move, player_id, position}, @timeout_milliseconds)
   end
 
-  @spec get_game(pid()) :: any
-  def get_game(session_pid) do
-    GenServer.call(session_pid, {:get_game}, @timeout_milliseconds)
+  @spec get_game(id()) :: any
+  def get_game(session_id) do
+    GenServer.call(via_tuple(session_id), {:get_game}, @timeout_milliseconds)
   end
 
-  @spec get_stats(pid()) :: any
-  def get_stats(session_pid) do
-    GenServer.call(session_pid, {:get_stats}, @timeout_milliseconds)
+  @spec get_stats(id()) :: any
+  def get_stats(session_id) do
+    GenServer.call(via_tuple(session_id), {:get_stats}, @timeout_milliseconds)
   end
 
-  @spec join_game(pid(), String.t()) :: any
-  def join_game(session_pid, player_id) do
-    GenServer.call(session_pid, {:join_game, player_id}, @timeout_milliseconds)
+  @spec join_game(id(), String.t()) :: any
+  def join_game(session_id, player_id) do
+    GenServer.call(via_tuple(session_id), {:join_game, player_id}, @timeout_milliseconds)
   end
 
-  @spec leave_game(pid(), String.t()) :: any
-  def leave_game(session_pid, player_id) do
-    GenServer.call(session_pid, {:leave_game, player_id}, @timeout_milliseconds)
+  @spec leave_game(id(), String.t()) :: any
+  def leave_game(session_id, player_id) do
+    GenServer.call(via_tuple(session_id), {:leave_game, player_id}, @timeout_milliseconds)
+  end
+
+  def whereis(session_id) do
+    case Registry.lookup(TicTacToe.SessionRegistry, session_id) do
+      [{pid, _}] -> pid
+      [] -> nil
+    end
+  end
+
+  defp via_tuple(session_id) do
+    {:via, Registry, {TicTacToe.SessionRegistry, session_id}}
   end
 
   # server
