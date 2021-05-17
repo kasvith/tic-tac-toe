@@ -31,7 +31,7 @@ defmodule TicTacToe.Session do
   # client
   @spec start_link(String.t()) :: :ignore | {:error, any} | {:ok, pid}
   def start_link(session_id, _opts \\ []) do
-    IO.puts("Starting session #{session_id}")
+    Logger.info("Starting session #{session_id}")
     GenServer.start_link(__MODULE__, session_id)
   end
 
