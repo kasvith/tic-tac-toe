@@ -22,6 +22,7 @@ defmodule TicTacToe.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:ex_doc, "~> 0.23", only: :dev, runtime: false},
       {:nanoid, "~> 2.0.5"},
       {:gproc, "~> 0.9.0"}

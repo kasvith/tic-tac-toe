@@ -24,13 +24,13 @@ defmodule TicTacToe.Session do
   # client
   @spec start_link(String.t()) :: :ignore | {:error, any} | {:ok, pid}
   def start_link(session_id) do
-    GenServer.start_link(__MODULE__, session_id, name: via_id(session_id))
+    GenServer.start_link(__MODULE__, [session_id], name: via_id(session_id))
   end
 
   # server
   @impl GenServer
-  def init(session_id) do
-    {:ok, %TicTacToe.Session{session_id: session_id}, @timeout_milliseconds}
+  def init([session_id]) do
+    {:ok, %TicTacToe.Session{session_id: session_id}}
   end
 
   defp via_id(session_id) do

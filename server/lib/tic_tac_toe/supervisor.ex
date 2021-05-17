@@ -5,17 +5,19 @@ defmodule TicTacToe.SessionSupervisor do
 
   use DynamicSupervisor
 
+  alias TicTacToe.Session
+
   @doc """
   Start the supervisor
   """
   def start_link(args) do
-    IO.puts("SessionSupervisor starting...")
-    DynamicSupervisor.start_link(__MODULE__, args, name: __MODULE__)
+    IO.puts("SessionSupervisor starting with #{inspect(args)}")
+    DynamicSupervisor.start_link(__MODULE__, [], name: __MODULE__)
   end
 
   @doc false
   @impl true
-  def init(args), do: DynamicSupervisor.init(strategy: :one_for_one, extra_arguments: [args])
+  def init(_args), do: DynamicSupervisor.init(strategy: :one_for_one)
 
   @doc """
   Each process is a tied to a session id
@@ -42,9 +44,9 @@ defmodule TicTacToe.SessionSupervisor do
   Create a new process if it doesn't already exist
   """
   def create_process(id) do
-    spec = %{id: id, start: {User, :start_link, [id]}}
+    spec = %{id: Session, start: {Session, :start_link, [id]}}
 
-    case DynamicSupervisor.start_child(__MODULE__, spec) do
+    case DynamicSupervisor.start_child(__MODULE__, Supervisor.child_spec(spec, [])) do
       {:ok, _pid} -> {:ok, id}
       {:error, {:already_started, _pid}} -> {:error, :process_already_exists}
       other -> {:error, other}

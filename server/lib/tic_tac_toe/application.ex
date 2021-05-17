@@ -8,7 +8,7 @@ defmodule TicTacToe.Application do
     children = [
       {Registry, keys: :unique, name: TicTacToe.SessionRegistry},
       {TicTacToe.Lobby, []},
-      {TicTacToe.SessionSupervisor, strategy: :one_for_one, name: TicTacToe.SessionSupervisor}
+      {TicTacToe.SessionSupervisor, []}
     ]
 
     opts = [strategy: :one_for_one, name: TicTacToe.MainSupervisor]
