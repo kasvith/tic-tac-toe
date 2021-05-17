@@ -1,7 +1,7 @@
 defmodule TicTacToe.Supervisor do
   use Supervisor
 
-  def start_link(opts) do
+  def start_link(opts \\ []) do
     Supervisor.start_link(__MODULE__, :ok, opts)
   end
 
