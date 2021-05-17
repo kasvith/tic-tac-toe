@@ -19,9 +19,19 @@ defmodule TicTacToe.Session do
   # 10 mins
   @timeout_milliseconds 10 * 60 * 1000
 
+  def child_spec(arg) do
+    IO.puts("Using child spec #{inspect(arg)}")
+
+    %{
+      id: __MODULE__,
+      start: {__MODULE__, :start_link, [arg]}
+    }
+  end
+
   # client
   @spec start_link(String.t()) :: :ignore | {:error, any} | {:ok, pid}
-  def start_link(session_id) do
+  def start_link(session_id, _opts \\ []) do
+    IO.puts("Starting session #{session_id}")
     GenServer.start_link(__MODULE__, session_id)
   end
 

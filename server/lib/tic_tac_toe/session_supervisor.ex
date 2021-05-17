@@ -1,8 +1,8 @@
 defmodule TicTacToe.SessionSupervisor do
   use DynamicSupervisor
 
-  def start_link(init_arg) do
-    DynamicSupervisor.start_link(__MODULE__, init_arg, name: __MODULE__)
+  def start_link(init_args) do
+    DynamicSupervisor.start_link(__MODULE__, init_args, name: __MODULE__)
   end
 
   def start_child(session_id) do
@@ -11,7 +11,7 @@ defmodule TicTacToe.SessionSupervisor do
   end
 
   @impl true
-  def init(_init_arg) do
-    DynamicSupervisor.init(strategy: :one_for_one)
+  def init(init_args) do
+    DynamicSupervisor.init(strategy: :one_for_one, extra_arguments: [init_args])
   end
 end
