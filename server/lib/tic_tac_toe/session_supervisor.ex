@@ -7,7 +7,12 @@ defmodule TicTacToe.SessionSupervisor do
 
   def start_child(session_id) do
     spec = {TicTacToe.Session, session_id}
-    DynamicSupervisor.start_child(__MODULE__, spec)
+
+    case DynamicSupervisor.start_child(__MODULE__, spec) do
+      {:ok, _pid} -> {:ok, session_id}
+      {:error, {:already_started, _pid}} -> {:error, :process_already_exists}
+      other -> {:error, other}
+    end
   end
 
   @impl true

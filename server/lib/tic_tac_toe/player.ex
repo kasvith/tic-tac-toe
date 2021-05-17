@@ -1,5 +1,6 @@
 defmodule TicTacToe.Player do
   use GenServer
+  alias TicTacToe.Lobby
 
   defstruct player_id: nil,
             current_game_session: nil,
@@ -35,5 +36,9 @@ defmodule TicTacToe.Player do
 
   @impl GenServer
   def handle_call(:create_game_session, _from, %TicTacToe.Player{} = player) do
+    session = Lobby.generate_game_session_id()
+    new_state = %TicTacToe.Player{player | current_game_session: session, playing: true}
+
+    {:reply, %{session: session}, new_state, @timeout}
   end
 end
