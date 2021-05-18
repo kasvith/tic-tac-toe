@@ -5,7 +5,7 @@ defmodule TicTacToe.Session.Test do
   @game "game"
 
   setup do
-    {:ok, _} = TicTacToe.SessionSupervisor.start_child(@game)
+    {:ok, _} = TicTacToe.SessionSupervisor.start_session(@game)
 
     on_exit(fn ->
       case TicTacToe.Session.whereis(@game) do

@@ -5,7 +5,7 @@ defmodule TicTacToe.SessionSupervisor do
     DynamicSupervisor.start_link(__MODULE__, init_args, name: __MODULE__)
   end
 
-  def start_child(session_id) do
+  def start_session(session_id) do
     spec = {TicTacToe.Session, session_id}
 
     case DynamicSupervisor.start_child(__MODULE__, spec) do

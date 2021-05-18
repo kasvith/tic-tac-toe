@@ -155,16 +155,16 @@ defmodule TicTacToe.Session do
         _from,
         %TicTacToe.Session{player_x: player_x, player_o: player_o} = state
       ) do
-    new_state =
+    {reply, new_state} =
       case player_id do
-        ^player_x -> %TicTacToe.Session{state | player_x: nil}
-        ^player_o -> %TicTacToe.Session{state | player_o: nil}
-        _ -> state
+        ^player_x -> {:ok, %TicTacToe.Session{state | player_x: nil}}
+        ^player_o -> {:ok, %TicTacToe.Session{state | player_o: nil}}
+        _ -> {:error, state}
       end
 
     {
       :reply,
-      {:ok},
+      reply,
       new_state,
       @timeout_milliseconds
     }
