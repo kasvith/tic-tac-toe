@@ -24,9 +24,11 @@ defmodule TicTacToe.MixProject do
     [
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:ex_doc, "~> 0.23", only: :dev, runtime: false},
-      {:nanoid, "~> 2.0.5"}
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
+      {:nanoid, "~> 2.0.5"},
+      {:cowboy, "~> 2.9"},
+      {:plug, "~> 1.11"},
+      {:plug_cowboy, "~> 2.5"},
+      {:jason, "~> 1.2"}
     ]
   end
 end
