@@ -4,8 +4,15 @@ defmodule TicTacToe.Application do
 
   @impl Application
   def start(_type, _args) do
+    children = [
+      TicTacToe.Supervisor,
+      TicTacToeWeb.Supervisor
+    ]
+
+    opts = [strategy: :one_for_one, name: Main.Supervisor]
+
     Logger.info("Application starting...")
 
-    TicTacToe.Supervisor.start_link()
+    Supervisor.start_link(children, opts)
   end
 end

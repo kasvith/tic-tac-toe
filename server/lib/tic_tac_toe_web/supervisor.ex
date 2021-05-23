@@ -1,4 +1,4 @@
-defmodule TicTacToe.WebSupervisor do
+defmodule TicTacToeWeb.Supervisor do
   use Supervisor
 
   def start_link(opts \\ []) do
@@ -8,10 +8,7 @@ defmodule TicTacToe.WebSupervisor do
   @impl true
   def init(:ok) do
     children = [
-      {Registry, keys: :unique, name: TicTacToe.SessionRegistry},
-      {Registry, keys: :unique, name: TicTacToe.PlayerRegistry},
-      {Registry, keys: :duplicate, name: TicTacToe.PubSub},
-      TicTacToe.SessionSupervisor
+      {Plug.Cowboy, scheme: :http, plug: TicTacToeWeb.Router, options: [port: 8080]}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
