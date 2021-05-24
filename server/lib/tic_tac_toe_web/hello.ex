@@ -1,11 +1,15 @@
 defmodule TicTacToeWeb.Hello do
-  import Plug.Conn
+  use Plug.Router
 
-  def init(options), do: options
+  plug(:match)
+  plug(:dispatch)
 
-  def call(conn, _opts) do
-    conn
-    |> put_resp_content_type("application/json")
-    |> send_resp(200, Jason.encode!(%{"status" => "ok"}))
+  get "/secret" do
+    IO.puts("get called")
+    send_resp(conn, 200, "{backdoor: 'reindeer flotilla'}")
+  end
+
+  match _ do
+    send_resp(conn, 404, "No authorized route")
   end
 end
