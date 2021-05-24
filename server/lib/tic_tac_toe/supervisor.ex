@@ -11,7 +11,8 @@ defmodule TicTacToe.Supervisor do
       {Registry, keys: :unique, name: TicTacToe.SessionRegistry},
       {Registry, keys: :unique, name: TicTacToe.PlayerRegistry},
       {Registry, keys: :duplicate, name: TicTacToe.PubSub},
-      TicTacToe.SessionSupervisor
+      TicTacToe.SessionSupervisor,
+      TicTacToe.PlayerSupervisor
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

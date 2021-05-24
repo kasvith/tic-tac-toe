@@ -1,5 +1,7 @@
 defmodule TicTacToe.Player do
   use GenServer
+  require Logger
+
   alias TicTacToe.Lobby
   alias TicTacToe.SessionSupervisor
   alias TicTacToe.Session
@@ -12,8 +14,21 @@ defmodule TicTacToe.Player do
 
   @timeout 30 * 60 * 1000
 
+  def child_spec(player_id) do
+    %{
+      id: __MODULE__,
+      start: {__MODULE__, :start_link, [player_id]},
+      restart: :temporary
+    }
+  end
+
+  def start_link([], player_id) do
+    start_link(player_id)
+  end
+
   def start_link(player_id) do
-    GenServer.call(__MODULE__, player_id)
+    IO.puts("Creating player #{inspect(player_id)}")
+    GenServer.start_link(__MODULE__, player_id)
   end
 
   def create_game_session(player_id) do
@@ -83,5 +98,11 @@ defmodule TicTacToe.Player do
       ) do
     Session.leave_game(session_id, player_id)
     {:reply, :ok, player, @timeout}
+  end
+
+  @impl GenServer
+  def handle_info(:timeout, %TicTacToe.Player{player_id: player_id} = player) do
+    Logger.info("Player #{player_id} timeout")
+    {:stop, :normal, player}
   end
 end
