@@ -10,7 +10,7 @@ defmodule TicTacToe.PlayerSupervisor do
 
     case DynamicSupervisor.start_child(__MODULE__, spec) do
       {:ok, _pid} -> {:ok, player_id}
-      {:error, {:already_started, _pid}} -> {:error, :process_already_exists}
+      {:error, {:already_started, _pid}} -> {:ok, player_id}
       other -> {:error, other}
     end
   end

@@ -1,7 +1,6 @@
 defmodule TicTacToeWeb.Router do
   use Plug.Router
   import Plug.Conn
-  Plug.Conn
 
   plug(Plug.Logger)
   plug(:match)
@@ -9,7 +8,7 @@ defmodule TicTacToeWeb.Router do
 
   use Plug.ErrorHandler
 
-  forward("/hello", to: TicTacToeWeb.Player)
+  forward("/player", to: TicTacToeWeb.Player)
 
   match _ do
     conn
