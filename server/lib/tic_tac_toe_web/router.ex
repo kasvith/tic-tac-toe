@@ -8,7 +8,7 @@ defmodule TicTacToeWeb.Router do
 
   use Plug.ErrorHandler
 
-  forward("/player", to: TicTacToeWeb.Player)
+  forward("/player", to: TicTacToeWeb.PlayerController)
 
   match _ do
     conn

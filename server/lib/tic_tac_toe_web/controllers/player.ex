@@ -1,4 +1,4 @@
-defmodule TicTacToeWeb.Player do
+defmodule TicTacToeWeb.PlayerController do
   alias TicTacToe.PlayerSupervisor
 
   use Plug.Router
