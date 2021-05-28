@@ -8,9 +8,26 @@ defmodule TicTacToeWeb.Supervisor do
   @impl true
   def init(:ok) do
     children = [
-      {Plug.Cowboy, scheme: :http, plug: TicTacToeWeb.Router, options: [port: 8080]}
+      Plug.Cowboy.child_spec(
+        scheme: :http,
+        plug: TicTacToeWeb.Router,
+        options: [
+          dispatch: dispatch(),
+          port: 4000
+        ]
+      )
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
+  end
+
+  defp dispatch do
+    [
+      {:_,
+       [
+         {"/ws/[...]", MyWebsocketApp.SocketHandler, []},
+         {:_, Plug.Cowboy.Handler, {TicTacToeWeb.Router, []}}
+       ]}
+    ]
   end
 end

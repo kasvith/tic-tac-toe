@@ -1,1 +1,1 @@
-GET http://localhost:8080/hello/t1 HTTP/1.1
+POST http://localhost:8080/player/register HTTP/1.1
