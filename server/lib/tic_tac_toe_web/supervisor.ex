@@ -25,7 +25,7 @@ defmodule TicTacToeWeb.Supervisor do
     [
       {:_,
        [
-         {"/ws/[...]", MyWebsocketApp.SocketHandler, []},
+         {"/ws/[...]", TicTacToeWeb.SocketHandler, []},
          {:_, Plug.Cowboy.Handler, {TicTacToeWeb.Router, []}}
        ]}
     ]
