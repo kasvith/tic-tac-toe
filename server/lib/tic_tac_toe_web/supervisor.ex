@@ -23,11 +23,13 @@ defmodule TicTacToeWeb.Supervisor do
 
   defp dispatch do
     [
-      {:_,
-       [
-         {"/ws/[...]", TicTacToeWeb.SocketHandler, []},
-         {:_, Plug.Cowboy.Handler, {TicTacToeWeb.Router, []}}
-       ]}
+      {
+        :_,
+        [
+          {"/ws/[...]", TicTacToeWeb.SocketHandler, []},
+          {:_, Plug.Cowboy.Handler, {TicTacToeWeb.Router, []}}
+        ]
+      }
     ]
   end
 end
