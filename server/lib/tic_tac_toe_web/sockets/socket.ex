@@ -1,35 +1,39 @@
-defmodule TicTacToeWeb.SocketHander do
-  @behaviour :cowboy_websocket
+defmodule TicTacToeWeb.SocketHandler do
+  alias TicTacToeWeb.SocketRouter
 
+  @behaviour :cowboy_websocket
+  require Logger
+
+  defstruct query: %{}
+
+  @impl true
   def init(request, _state) do
-    state = %{registry_key: request.path}
+    state = %TicTacToeWeb.SocketHandler{query: URI.decode_query(request.qs)}
 
     {:cowboy_websocket, request, state}
   end
 
-  def websocket_init(state) do
-    Registry.MyWebsocketApp
-    |> Registry.register(state.registry_key, {})
-
+  @impl true
+  def websocket_init(%TicTacToeWeb.SocketHandler{} = state) do
     {:ok, state}
   end
 
+  @impl true
   def websocket_handle({:text, json}, state) do
-    payload = Jason.decode!(json)
-    message = payload["data"]["message"]
-
-    Registry.MyWebsocketApp
-    |> Registry.dispatch(state.registry_key, fn entries ->
-      for {pid, _} <- entries do
-        if pid != self() do
-          Process.send(pid, message, [])
-        end
+    reply =
+      case Jason.decode(json) do
+        {:ok, payload} -> handle_payload(payload)
+        {:error, _err} -> "error parsing json"
       end
-    end)
 
-    {:reply, {:text, message}, state}
+    {:reply, {:text, reply}, state}
   end
 
+  def handle_payload(payload) do
+    Jason.encode!(SocketRouter.handle_payload(payload))
+  end
+
+  @impl true
   def websocket_info(info, state) do
     {:reply, {:text, info}, state}
   end
