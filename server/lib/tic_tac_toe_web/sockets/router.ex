@@ -3,7 +3,7 @@ defmodule TicTacToeWeb.SocketRouter do
     %{"reply" => "pong"}
   end
 
-  def handle_payload(%{"type" => "piing"} = _payload) do
+  def handle_payload(%{"type" => "join", "data" => %{  }} = _payload) do
     %{"reply" => "poong"}
   end
 
