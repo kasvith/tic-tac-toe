@@ -261,10 +261,10 @@ defmodule TicTacToe.Session do
   defp update_winner(%TicTacToe.Session{stats: stats} = session, winner) do
     case winner do
       :x ->
-        Map.update(stats, session.player_x, 1, fn old -> old + 1 end)
+        Map.update(stats, session.player_x, 1, &(&1 + 1))
 
       :o ->
-        Map.update(stats, session.player_o, 1, fn old -> old + 1 end)
+        Map.update(stats, session.player_o, 1, &(&1 + 1))
     end
   end
 end
