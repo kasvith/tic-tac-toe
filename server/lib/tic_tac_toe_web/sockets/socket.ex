@@ -20,10 +20,10 @@ defmodule TicTacToeWeb.SocketHandler do
 
   @impl true
   def websocket_handle({:text, json}, state) do
-    reply =
+    {reply, state} =
       case Jason.decode(json) do
-        {:ok, payload} -> handle_payload(payload)
-        {:error, _err} -> "error parsing json"
+        {:ok, payload} -> handle_payload(state, payload)
+        {:error, _err} -> {Jason.encode!(%{"error" => "error parsing json"}), state}
       end
 
     {:reply, {:text, reply}, state}

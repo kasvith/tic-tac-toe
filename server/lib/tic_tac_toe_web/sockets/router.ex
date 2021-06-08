@@ -1,13 +1,13 @@
 defmodule TicTacToeWeb.SocketRouter do
-  def handle_payload(%{"type" => "ping"} = _payload) do
-    %{"reply" => "pong"}
+  def handle_payload(%{"type" => "create:session"} = _payload, state) do
+    {%{"data" => %{"session_id" => session_id}}, state}
   end
 
-  def handle_payload(%{"type" => "join", "data" => %{  }} = _payload) do
-    %{"reply" => "poong"}
+  def handle_payload(%{"type" => "join:session"} = _payload, state) do
+    {%{"reply" => "poong"}, state}
   end
 
-  def handle_payload(%{} = _payload) do
-    %{"reply" => "hi"}
+  def handle_payload(%{} = _payload, state) do
+    {%{"reply" => "hi"}, state}
   end
 end
