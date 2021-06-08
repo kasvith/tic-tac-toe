@@ -10,7 +10,7 @@ defmodule TicTacToe.Supervisor do
     children = [
       {Registry, keys: :unique, name: TicTacToe.SessionRegistry},
       {Registry, keys: :unique, name: TicTacToe.PlayerRegistry},
-      {Registry, keys: :duplicate, name: TicTacToe.PubSub},
+      {Registry, keys: :duplicate, name: TicTacToe.PubSubRegistry},
       TicTacToe.SessionSupervisor,
       TicTacToe.PlayerSupervisor
     ]

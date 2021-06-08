@@ -173,6 +173,8 @@ defmodule TicTacToe.Session do
   @impl GenServer
   def handle_info(:timeout, %TicTacToe.Session{session_id: session_id} = state) do
     Logger.info("Ending game session #{session_id} due to inactivity")
+    TicTacToe.PubSub.broadcast(session_id, :session_timeout)
+
     {:stop, :normal, state}
   end
 

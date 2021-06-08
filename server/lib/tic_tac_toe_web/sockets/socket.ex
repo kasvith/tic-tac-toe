@@ -30,13 +30,20 @@ defmodule TicTacToeWeb.SocketHandler do
     {:reply, {:text, reply}, state}
   end
 
+  @impl true
+  def websocket_info(info, state) do
+    IO.puts(inspect(info))
+    {reply, state} = handle_message(info, state)
+    {:reply, {:text, reply}, state}
+  end
+
   def handle_payload(payload, state) do
     {reply, state} = SocketRouter.handle_payload(payload, state)
     {Jason.encode!(reply), state}
   end
 
-  @impl true
-  def websocket_info(info, state) do
-    {:reply, {:text, info}, state}
+  def handle_message(info, state) do
+    {reply, state} = SocketRouter.handle_message(info, state)
+    {Jason.encode!(reply), state}
   end
 end
