@@ -1,6 +1,6 @@
 defmodule TicTacToeWeb.SocketRouter do
   def handle_payload(%{"type" => "create:session"} = _payload, state) do
-    {%{"data" => %{"session_id" => session_id}}, state}
+    {%{"data" => %{"session_id" => "session_id"}}, state}
   end
 
   def handle_payload(%{"type" => "join:session"} = _payload, state) do

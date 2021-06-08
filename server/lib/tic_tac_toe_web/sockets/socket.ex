@@ -4,11 +4,12 @@ defmodule TicTacToeWeb.SocketHandler do
   @behaviour :cowboy_websocket
   require Logger
 
-  defstruct query: %{}
+  defstruct query: %{}, player_id: nil
 
   @impl true
   def init(request, _state) do
-    state = %TicTacToeWeb.SocketHandler{query: URI.decode_query(request.qs)}
+    query = URI.decode_query(request.qs)
+    state = %TicTacToeWeb.SocketHandler{query: query}
 
     {:cowboy_websocket, request, state}
   end
@@ -22,15 +23,16 @@ defmodule TicTacToeWeb.SocketHandler do
   def websocket_handle({:text, json}, state) do
     {reply, state} =
       case Jason.decode(json) do
-        {:ok, payload} -> handle_payload(state, payload)
+        {:ok, payload} -> handle_payload(payload, state)
         {:error, _err} -> {Jason.encode!(%{"error" => "error parsing json"}), state}
       end
 
     {:reply, {:text, reply}, state}
   end
 
-  def handle_payload(payload) do
-    Jason.encode!(SocketRouter.handle_payload(payload))
+  def handle_payload(payload, state) do
+    {reply, state} = SocketRouter.handle_payload(payload, state)
+    {Jason.encode!(reply), state}
   end
 
   @impl true

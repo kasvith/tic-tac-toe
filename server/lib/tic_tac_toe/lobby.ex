@@ -3,7 +3,7 @@ defmodule TicTacToe.Lobby do
     id = Nanoid.generate(10)
 
     case is_game_started?(id) do
-      false -> {:ok, id}
+      false -> id
       true -> generate_game_session_id()
     end
   end

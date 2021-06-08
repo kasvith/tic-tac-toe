@@ -12,8 +12,6 @@ defmodule TicTacToe.Player do
             playing: false,
             sign: nil
 
-  @timeout 30 * 60 * 1000
-
   def child_spec(player_id) do
     %{
       id: __MODULE__,
@@ -28,33 +26,39 @@ defmodule TicTacToe.Player do
 
   def start_link(player_id) do
     IO.puts("Creating player #{inspect(player_id)}")
-    GenServer.start_link(__MODULE__, player_id)
+    GenServer.start_link(__MODULE__, player_id, name: via_tuple(player_id))
   end
 
   def create_game_session(player_id) do
-    IO.puts("")
-    GenServer.call(via_tuple(player_id), :create_game_session, @timeout)
+    GenServer.call(via_tuple(player_id), :create_game_session)
   end
 
   def join_game_session(player_id, session_id) do
-    GenServer.call(via_tuple(player_id), {:join_game_session, session_id}, @timeout)
+    GenServer.call(via_tuple(player_id), {:join_game_session, session_id})
   end
 
   def view_session(player_id, session_id) do
-    GenServer.call(via_tuple(player_id), {:view_session, session_id}, @timeout)
+    GenServer.call(via_tuple(player_id), {:view_session, session_id})
   end
 
   def leave_game_session(player_id, session_id) do
-    GenServer.call(via_tuple(player_id), {:leave_game_session, session_id}, @timeout)
+    GenServer.call(via_tuple(player_id), {:leave_game_session, session_id})
   end
 
   defp via_tuple(player_id) do
     {:via, Registry, {TicTacToe.PlayerRegistry, player_id}}
   end
 
+  def whereis(player_id) do
+    case Registry.lookup(TicTacToe.PlayerRegistry, player_id) do
+      [{pid, _}] -> pid
+      [] -> nil
+    end
+  end
+
   @impl GenServer
   def init(player_id) do
-    {:ok, %TicTacToe.Player{player_id: player_id}, @timeout}
+    {:ok, %TicTacToe.Player{player_id: player_id}}
   end
 
   @impl GenServer
@@ -70,7 +74,7 @@ defmodule TicTacToe.Player do
           {:error, reason}
       end
 
-    {:reply, reply, player, @timeout}
+    {:reply, reply, player}
   end
 
   @impl GenServer
@@ -89,7 +93,7 @@ defmodule TicTacToe.Player do
           {{:error, reason}, player}
       end
 
-    {:reply, reply, state, @timeout}
+    {:reply, reply, state}
   end
 
   def handle_call(
@@ -98,7 +102,7 @@ defmodule TicTacToe.Player do
         %TicTacToe.Player{player_id: player_id} = player
       ) do
     Session.leave_game(session_id, player_id)
-    {:reply, :ok, player, @timeout}
+    {:reply, :ok, player}
   end
 
   @impl GenServer
