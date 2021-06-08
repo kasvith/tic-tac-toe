@@ -1,6 +1,5 @@
 defmodule TicTacToeWeb.SocketRouter do
   def handle_payload(%{"type" => "create:session"} = _payload, state) do
-    TicTacToe.PubSub.subscribe("hello")
     {%{"data" => %{"session_id" => "session_id"}}, state}
   end
 
