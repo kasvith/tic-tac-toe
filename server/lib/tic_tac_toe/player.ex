@@ -32,6 +32,7 @@ defmodule TicTacToe.Player do
   end
 
   def create_game_session(player_id) do
+    IO.puts("")
     GenServer.call(via_tuple(player_id), :create_game_session, @timeout)
   end
 
