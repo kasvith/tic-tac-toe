@@ -16,7 +16,7 @@ defmodule TicTacToeWeb.PlayerController do
 
     conn
     |> put_resp_content_type("application/json")
-    |> send_resp(status, Jason.encode!(resp))
+    |> send_resp(status, Poison.encode!(resp))
   end
 
   match _ do

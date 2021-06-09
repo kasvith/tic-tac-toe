@@ -1,1 +1,1 @@
-POST http://localhost:8080/player/register HTTP/1.1
+POST http://localhost:4000/player/register HTTP/1.1

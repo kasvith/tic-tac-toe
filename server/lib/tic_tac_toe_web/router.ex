@@ -13,6 +13,6 @@ defmodule TicTacToeWeb.Router do
   match _ do
     conn
     |> put_resp_content_type("application/json")
-    |> send_resp(404, Jason.encode!(%{"message" => "Not Found"}))
+    |> send_resp(404, Poison.encode!(%{"message" => "Not Found"}))
   end
 end

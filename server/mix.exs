@@ -28,7 +28,7 @@ defmodule TicTacToe.MixProject do
       {:cowboy, "~> 2.9"},
       {:plug, "~> 1.11"},
       {:plug_cowboy, "~> 2.5"},
-      {:jason, "~> 1.2"}
+      {:poison, "~> 4.0"}
     ]
   end
 end
