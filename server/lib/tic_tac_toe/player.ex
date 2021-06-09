@@ -68,7 +68,7 @@ defmodule TicTacToe.Player do
     reply =
       case SessionSupervisor.start_session(session_id) do
         {:ok, _} ->
-          %{session_id: session_id}
+          {:ok, session_id}
 
         {:error, reason} ->
           {:error, reason}
