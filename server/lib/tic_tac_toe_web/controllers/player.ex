@@ -8,6 +8,8 @@ defmodule TicTacToeWeb.PlayerController do
   plug(:dispatch)
 
   post "/register" do
+    IO.puts(inspect(conn.body_params))
+
     {status, resp} =
       case PlayerSupervisor.create_player(Nanoid.generate()) do
         {:ok, player_id} -> {201, %{"id" => player_id}}

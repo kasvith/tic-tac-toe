@@ -1,8 +1,15 @@
-defmodule TicTacToeWeb.Router do
+defmodule TicTacToeWeb.Endpoint do
   use Plug.Router
   import Plug.Conn
 
   plug(Plug.Logger)
+
+  plug(
+    Plug.Parsers,
+    parsers: [:urlencoded, :json],
+    json_decoder: Poison
+  )
+
   plug(:match)
   plug(:dispatch)
 

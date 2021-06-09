@@ -13,7 +13,7 @@ defmodule TicTacToeWeb.Supervisor do
     children = [
       Plug.Cowboy.child_spec(
         scheme: :http,
-        plug: TicTacToeWeb.Router,
+        plug: TicTacToeWeb.Endpoint,
         options: [
           dispatch: dispatch(),
           port: port
@@ -32,7 +32,7 @@ defmodule TicTacToeWeb.Supervisor do
         :_,
         [
           {"/ws/[...]", TicTacToeWeb.SocketHandler, []},
-          {:_, Plug.Cowboy.Handler, {TicTacToeWeb.Router, []}}
+          {:_, Plug.Cowboy.Handler, {TicTacToeWeb.Endpoint, []}}
         ]
       }
     ]
