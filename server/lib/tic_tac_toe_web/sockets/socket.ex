@@ -25,7 +25,7 @@ defmodule TicTacToeWeb.SocketHandler do
     {reply, state} =
       case Poison.decode(json) do
         {:ok, payload} -> handle_payload(payload, state)
-        {:error, err} -> {Poison.encode!(%{"error" => err}), state}
+        {:error, _err} -> {Poison.encode!(%{"error" => "error parsing json"}), state}
       end
 
     {:reply, {:text, reply}, state}
