@@ -56,10 +56,10 @@ defmodule TicTacToe.Player do
     end
   end
 
-  def is_alive?(player_id) do
+  def alive(player_id) do
     case Registry.lookup(TicTacToe.PlayerRegistry, player_id) do
-      [{_pid, _}] -> true
-      [] -> false
+      [{_pid, _}] -> :ok
+      [] -> {:error, "player session not started"}
     end
   end
 

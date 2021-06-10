@@ -58,7 +58,6 @@ defmodule TicTacToe.Session do
     GenServer.call(via_tuple(session_id), :get_stats, @timeout_milliseconds)
   end
 
-  @spec join_game(id(), player_id()) :: any
   def join_game(session_id, player_id) do
     GenServer.call(via_tuple(session_id), {:join_game, player_id}, @timeout_milliseconds)
   end
@@ -181,7 +180,7 @@ defmodule TicTacToe.Session do
     {:stop, :normal, state}
   end
 
-  @spec join_game_session(t(), String.t()) :: {{atom(), :x | :o}, t()}
+  @spec join_game_session(t(), player_id()) :: {{:ok, :x | :o}, {:error, String.t()}}
   defp join_game_session(%TicTacToe.Session{player_x: nil, player_o: o} = state, player_id)
        when player_id != o do
     {{:ok, :x},

@@ -1,4 +1,5 @@
 defmodule TicTacToeWeb.SocketHandler do
+  import Utils.Json
   alias TicTacToeWeb.SocketRouter
 
   @behaviour :cowboy_websocket
@@ -22,13 +23,13 @@ defmodule TicTacToeWeb.SocketHandler do
 
   @impl true
   def websocket_handle({:text, json}, state) do
-    {reply, state} =
-      case Poison.decode(json) do
-        {:ok, payload} -> handle_payload(payload, state)
-        {:error, _err} -> {Poison.encode!(%{"error" => "error parsing json"}), state}
-      end
+    case json_decode(json) do
+      {:ok, payload} ->
+        handle_payload(payload, state)
 
-    {:reply, {:text, reply}, state}
+      {:error, _err} ->
+        {:reply, {:text, json_encode!(%{error: "error parsing json"})}, state}
+    end
   end
 
   @impl true
@@ -39,17 +40,15 @@ defmodule TicTacToeWeb.SocketHandler do
 
   def handle_payload(payload, state) do
     case SocketRouter.handle_payload(payload, state) do
-      {:reply, reply, state} -> {:reply, {:text, Poison.encode!(reply)}, state}
+      {:reply, reply, state} -> {:reply, {:text, json_encode!(reply)}, state}
       {:ok, state} -> {:ok, state}
-      _ -> {:ok, state}
     end
   end
 
   def handle_message(info, state) do
     case SocketRouter.handle_message(info, state) do
-      {:reply, reply, state} -> {:reply, {:text, Poison.encode!(reply)}, state}
+      {:reply, reply, state} -> {:reply, {:text, json_encode!(reply)}, state}
       {:ok, state} -> {:ok, state}
-      _ -> {:ok, state}
     end
   end
 end

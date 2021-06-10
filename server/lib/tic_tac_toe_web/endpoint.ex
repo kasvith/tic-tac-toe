@@ -1,5 +1,7 @@
 defmodule TicTacToeWeb.Endpoint do
   use Plug.Router
+  import Utils.Json
+
   import Plug.Conn
 
   plug(Plug.Logger)
@@ -7,7 +9,7 @@ defmodule TicTacToeWeb.Endpoint do
   plug(
     Plug.Parsers,
     parsers: [:urlencoded, :json],
-    json_decoder: Poison
+    json_decoder: Jason
   )
 
   plug(:match)
@@ -20,6 +22,6 @@ defmodule TicTacToeWeb.Endpoint do
   match _ do
     conn
     |> put_resp_content_type("application/json")
-    |> send_resp(404, Poison.encode!(%{"message" => "Not Found"}))
+    |> send_resp(404, json_encode!(%{message: "Not Found"}))
   end
 end
