@@ -1,8 +1,13 @@
 defmodule TicTacToeWeb.PlayerController do
+  import Utils.Plug
+  import Utils.Json
+  import Plug.Conn
+
   alias TicTacToe.PlayerSupervisor
+  alias TicTacToe.Player
+  alias TicTacToe.Session
 
   use Plug.Router
-  import Utils.Plug
 
   plug(:match)
   plug(:dispatch)
@@ -18,7 +23,20 @@ defmodule TicTacToeWeb.PlayerController do
   end
 
   post "/create/session" do
-    conn
+    %{"playerId" => player_id} = conn.body_params
+    IO.puts(player_id)
+
+    # reply =
+    #   with :ok <- Player.alive(player_id),
+    #        {:ok, session_id} <- Player.create_game_session(player_id),
+    #        {:ok, sign} <- Session.join_game(session_id, player_id) do
+    #     wrap_data(%{session: %{id: session_id, sign: sign}})
+    #   else
+    #     {:error, reason} -> wrap_error(reason)
+    #     _ -> wrap_error("unknown error")
+    #   end
+
+    conn |>
   end
 
   match _ do
