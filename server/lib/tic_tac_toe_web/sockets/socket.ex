@@ -38,12 +38,18 @@ defmodule TicTacToeWeb.SocketHandler do
   end
 
   def handle_payload(payload, state) do
-    {reply, state} = SocketRouter.handle_payload(payload, state)
-    {Poison.encode!(reply), state}
+    case SocketRouter.handle_payload(payload, state) do
+      {:reply, reply, state} -> {:reply, {:text, Poison.encode!(reply)}, state}
+      {:ok, state} -> {:ok, state}
+      _ -> {:ok, state}
+    end
   end
 
   def handle_message(info, state) do
-    {reply, state} = SocketRouter.handle_message(info, state)
-    {Poison.encode!(reply), state}
+    case SocketRouter.handle_message(info, state) do
+      {:reply, reply, state} -> {:reply, {:text, Poison.encode!(reply)}, state}
+      {:ok, state} -> {:ok, state}
+      _ -> {:ok, state}
+    end
   end
 end

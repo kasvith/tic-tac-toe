@@ -3,13 +3,16 @@ defmodule TicTacToe.Session do
   use GenServer, restart: :temporary
 
   @type id :: String.t()
+  @type position :: integer()
+  @type player_id :: String.t()
+  @type stats :: %{optional(String.t()) => integer()}
 
   @type t :: %__MODULE__{
-          session_id: String.t() | nil,
+          session_id: id() | nil,
           game: TicTacToe.Game.t() | nil,
-          player_x: String.t() | nil,
-          player_o: String.t() | nil,
-          stats: %{optional(String.t()) => integer()}
+          player_x: player_id() | nil,
+          player_o: player_id() | nil,
+          stats: stats()
         }
 
   defstruct session_id: nil,
@@ -40,22 +43,22 @@ defmodule TicTacToe.Session do
     GenServer.start_link(__MODULE__, session_id, name: via_tuple(session_id))
   end
 
-  @spec move(id(), String.t(), integer()) :: any
+  @spec move(id(), player_id(), position()) :: {:ok, player_id()} | {:error, String.t()}
   def move(session_id, player_id, position) do
     GenServer.call(via_tuple(session_id), {:move, player_id, position}, @timeout_milliseconds)
   end
 
-  @spec get_game(id()) :: any
+  @spec get_game(id()) :: TicTacToe.Game.t()
   def get_game(session_id) do
-    GenServer.call(via_tuple(session_id), {:get_game}, @timeout_milliseconds)
+    GenServer.call(via_tuple(session_id), :get_game, @timeout_milliseconds)
   end
 
-  @spec get_stats(id()) :: any
+  @spec get_stats(id()) :: stats()
   def get_stats(session_id) do
-    GenServer.call(via_tuple(session_id), {:get_stats}, @timeout_milliseconds)
+    GenServer.call(via_tuple(session_id), :get_stats, @timeout_milliseconds)
   end
 
-  @spec join_game(id(), String.t()) :: any
+  @spec join_game(id(), player_id()) :: any
   def join_game(session_id, player_id) do
     GenServer.call(via_tuple(session_id), {:join_game, player_id}, @timeout_milliseconds)
   end
@@ -113,7 +116,7 @@ defmodule TicTacToe.Session do
   end
 
   @impl GenServer
-  def handle_call({:get_game}, _from, %TicTacToe.Session{game: game} = state) do
+  def handle_call(:get_game, _from, %TicTacToe.Session{game: game} = state) do
     {
       :reply,
       game,
@@ -123,7 +126,7 @@ defmodule TicTacToe.Session do
   end
 
   @impl GenServer
-  def handle_call({:get_stats}, _from, %TicTacToe.Session{stats: stats} = state) do
+  def handle_call(:get_stats, _from, %TicTacToe.Session{stats: stats} = state) do
     {
       :reply,
       stats,

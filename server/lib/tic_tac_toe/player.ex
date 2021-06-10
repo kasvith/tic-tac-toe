@@ -56,6 +56,13 @@ defmodule TicTacToe.Player do
     end
   end
 
+  def is_alive?(player_id) do
+    case Registry.lookup(TicTacToe.PlayerRegistry, player_id) do
+      [{_pid, _}] -> true
+      [] -> false
+    end
+  end
+
   @impl GenServer
   def init(player_id) do
     {:ok, %TicTacToe.Player{player_id: player_id}}
