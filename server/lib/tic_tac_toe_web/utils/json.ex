@@ -7,11 +7,15 @@ defmodule Utils.Json do
     Jason.decode(input, opts)
   end
 
-  def wrap_data(data) do
-    %{data: data}
+  defmacro wrap_data(data) do
+    quote do
+      %{data: unquote(data)}
+    end
   end
 
-  def wrap_error(err) do
-    %{error: err}
+  defmacro wrap_error(err) do
+    quote do
+      %{error: unquote(err)}
+    end
   end
 end
