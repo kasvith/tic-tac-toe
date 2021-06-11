@@ -5,7 +5,6 @@ defmodule TicTacToeWeb.PlayerController do
 
   alias TicTacToe.PlayerSupervisor
   alias TicTacToe.Player
-  alias TicTacToe.Session
 
   use Plug.Router
 
@@ -27,9 +26,8 @@ defmodule TicTacToeWeb.PlayerController do
 
     {status, reply} =
       with :ok <- Player.alive(player_id),
-           {:ok, session_id} <- Player.create_game_session(player_id),
-           {:ok, sign} <- Session.join_game(session_id, player_id) do
-        {201, %{session: %{id: session_id, sign: sign}}}
+           {:ok, session_id} <- Player.create_game_session(player_id) do
+        {201, %{session: %{id: session_id}}}
       else
         {:error, reason} -> {400, wrap_error(reason)}
         _ -> {500, wrap_error("unknown error")}
