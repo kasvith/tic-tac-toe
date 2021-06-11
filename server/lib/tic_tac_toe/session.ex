@@ -23,7 +23,7 @@ defmodule TicTacToe.Session do
             stats: %{}
 
   # 10 mins
-  @timeout_milliseconds 10 * 60 * 1000
+  @timeout_milliseconds 1 * 60 * 1000
 
   def child_spec(session_id) do
     %{
@@ -201,7 +201,7 @@ defmodule TicTacToe.Session do
   @impl GenServer
   def handle_info(:timeout, %TicTacToe.Session{session_id: session_id} = state) do
     Logger.info("Ending game session #{session_id} due to inactivity")
-    TicTacToe.PubSub.broadcast(session_id, :session_timeout)
+    TicTacToe.PubSub.broadcast(session_id, {:session_timeout, session_id})
 
     {:stop, :normal, state}
   end

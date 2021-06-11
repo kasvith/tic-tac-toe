@@ -1,6 +1,7 @@
 defmodule TicTacToeWeb.SocketHandler do
   import Utils.Json
   alias TicTacToeWeb.SocketRouter
+  alias TicTacToe.PubSub
 
   @behaviour :cowboy_websocket
   require Logger
@@ -17,7 +18,11 @@ defmodule TicTacToeWeb.SocketHandler do
   end
 
   @impl true
-  def websocket_init(%TicTacToeWeb.SocketHandler{} = state) do
+  def websocket_init(%TicTacToeWeb.SocketHandler{player_id: player_id} = state) do
+    if player_id != nil do
+      PubSub.subscribe(player_id)
+    end
+
     {:ok, state}
   end
 

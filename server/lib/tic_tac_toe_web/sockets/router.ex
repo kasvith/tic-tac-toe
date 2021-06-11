@@ -1,6 +1,7 @@
 defmodule TicTacToeWeb.SocketRouter do
   alias TicTacToe.Player
   alias TicTacToe.Session
+  alias TicTacToe.PubSub
   import Utils.Json
 
   def handle_payload(
@@ -11,6 +12,7 @@ defmodule TicTacToeWeb.SocketRouter do
       with :ok <- Player.alive(player_id),
            :ok <- Session.alive(session_id),
            {:ok, sign} <- Session.join_game(session_id, player_id) do
+        PubSub.subscribe(session_id)
         wrap_data(%{session: %{sign: sign}})
       else
         {:error, reason} -> wrap_error(reason)
@@ -21,11 +23,11 @@ defmodule TicTacToeWeb.SocketRouter do
   end
 
   def handle_payload(%{} = _payload, state) do
-    {:reply, %{reply: "hi"}, state}
+    {:ok, state}
   end
 
-  def handle_message({:broadcast, :world} = _info, state) do
-    {:reply, %{reply: "message"}, state}
+  def handle_message({:broadcast, {:session_timeout, session_id}} = _info, state) do
+    {:reply, wrap_data(%{event: "session_timeout", session_id: session_id}), state}
   end
 
   def handle_message(_any, state) do
