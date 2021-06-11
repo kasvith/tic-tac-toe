@@ -1,8 +1,6 @@
 defmodule TicTacToeWeb.Endpoint do
   use Plug.Router
-  import Utils.Json
-
-  import Plug.Conn
+  import Utils.Plug
 
   plug(Plug.Logger)
 
@@ -17,11 +15,10 @@ defmodule TicTacToeWeb.Endpoint do
 
   use Plug.ErrorHandler
 
-  forward("/player", to: TicTacToeWeb.PlayerController)
+  forward("/api", to: TicTacToeWeb.ApiController)
 
   match _ do
     conn
-    |> put_resp_content_type("application/json")
-    |> send_resp(404, json_encode!(%{message: "Not Found"}))
+    |> json_resp(404, %{error: "Not Found"})
   end
 end

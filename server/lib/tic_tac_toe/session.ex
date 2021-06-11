@@ -15,6 +15,7 @@ defmodule TicTacToe.Session do
           stats: stats()
         }
 
+  @derive Jason.Encoder
   defstruct session_id: nil,
             game: nil,
             player_x: nil,
@@ -67,10 +68,21 @@ defmodule TicTacToe.Session do
     GenServer.call(via_tuple(session_id), {:leave_game, player_id}, @timeout_milliseconds)
   end
 
+  def get_session(session_id) do
+    GenServer.call(via_tuple(session_id), :get_session, @timeout_milliseconds)
+  end
+
   def whereis(session_id) do
     case Registry.lookup(TicTacToe.SessionRegistry, session_id) do
       [{pid, _}] -> pid
       [] -> nil
+    end
+  end
+
+  def alive(session_id) do
+    case Registry.lookup(TicTacToe.SessionRegistry, session_id) do
+      [{_pid, _}] -> :ok
+      [] -> {:error, "session not started"}
     end
   end
 
@@ -153,6 +165,20 @@ defmodule TicTacToe.Session do
 
   @impl GenServer
   def handle_call(
+        :get_session,
+        _from,
+        %TicTacToe.Session{} = state
+      ) do
+    {
+      :reply,
+      state,
+      state,
+      @timeout_milliseconds
+    }
+  end
+
+  @impl GenServer
+  def handle_call(
         {:leave_game, player_id},
         _from,
         %TicTacToe.Session{player_x: player_x, player_o: player_o} = state
@@ -180,7 +206,6 @@ defmodule TicTacToe.Session do
     {:stop, :normal, state}
   end
 
-  @spec join_game_session(t(), player_id()) :: {{:ok, :x | :o}, {:error, String.t()}}
   defp join_game_session(%TicTacToe.Session{player_x: nil, player_o: o} = state, player_id)
        when player_id != o do
     {{:ok, :x},

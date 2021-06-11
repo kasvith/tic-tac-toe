@@ -6,6 +6,7 @@ defmodule TicTacToe.Player do
   alias TicTacToe.SessionSupervisor
   alias TicTacToe.Session
 
+  @derive Jason.Encoder
   defstruct player_id: nil,
             current_game_session_id: nil,
             score: 0,
