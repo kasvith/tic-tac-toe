@@ -1,0 +1,22 @@
+{
+  "version": "1.0.0",
+  "name": "frontend-tic-tac-toe",
+  "description": "Frontend for Tic Tac Toe",
+  "author": {
+    "name": "Kasun Vithanage",
+    "email": "alankasun@gmail.com"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.0.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^1.2.3",
+    "@vue/compiler-sfc": "^3.0.5",
+    "vite": "^2.3.7"
+  }
+}
