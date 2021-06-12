@@ -33,14 +33,13 @@ defmodule TicTacToeWeb.SocketHandler do
         handle_payload(payload, state)
 
       {:error, _err} ->
-        {:reply, {:text, json_encode!(%{error: "error parsing json"})}, state}
+        {:reply, {:text, json_encode!(wrap_error("error parsing json"))}, state}
     end
   end
 
   @impl true
   def websocket_info(info, state) do
-    {reply, state} = handle_message(info, state)
-    {:reply, {:text, reply}, state}
+    handle_message(info, state)
   end
 
   def handle_payload(payload, state) do
