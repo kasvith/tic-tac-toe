@@ -2,16 +2,17 @@ defmodule TicTacToeWeb.SocketRouter do
   alias TicTacToe.Player
   alias TicTacToe.Session
   alias TicTacToe.PubSub
+  alias TicTacToeWeb.SocketHandler
   import Utils.Json
 
   def handle_payload(
         %{"type" => "join:session", "data" => %{"session_id" => session_id}} = _payload,
-        %TicTacToeWeb.SocketHandler{player_id: player_id} = state
+        %SocketHandler{player_id: player_id} = state
       ) do
     reply =
       with :ok <- Player.alive(player_id),
            :ok <- Session.alive(session_id),
-           {:ok, sign} <- Session.join_game(session_id, player_id) do
+           {:ok, sign} <- Player.join_game_session(player_id, session_id) do
         PubSub.subscribe(session_id)
         wrap_data(%{session: %{sign: sign}})
       else
@@ -20,6 +21,10 @@ defmodule TicTacToeWeb.SocketRouter do
       end
 
     {:reply, reply, state}
+  end
+
+  def handle_payload(%{"event" => "heartbeat"} = payload, state) do
+    {:reply, payload, state}
   end
 
   def handle_payload(%{} = _payload, state) do

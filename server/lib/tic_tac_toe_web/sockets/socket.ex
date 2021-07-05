@@ -11,7 +11,7 @@ defmodule TicTacToeWeb.SocketHandler do
   @impl true
   def init(request, _state) do
     query = URI.decode_query(request.qs)
-    player_id = Map.get(query, "playerId", nil)
+    player_id = Map.get(query, "player_id", nil)
     state = %TicTacToeWeb.SocketHandler{query: query, player_id: player_id}
 
     {:cowboy_websocket, request, state}
