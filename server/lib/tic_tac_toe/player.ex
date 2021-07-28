@@ -46,6 +46,10 @@ defmodule TicTacToe.Player do
     GenServer.call(via_tuple(player_id), {:leave_game_session, session_id})
   end
 
+  def make_move(player_id, position) do
+    GenServer.call(via_tuple(player_id), {:move, position})
+  end
+
   defp via_tuple(player_id) do
     {:via, Registry, {TicTacToe.PlayerRegistry, player_id}}
   end
@@ -111,6 +115,16 @@ defmodule TicTacToe.Player do
       ) do
     Session.leave_game(session_id, player_id)
     {:reply, :ok, player}
+  end
+
+  def handle_call(
+        {:move, pos},
+        _from,
+        %TicTacToe.Player{current_game_session_id: session_id, player_id: player_id} = player
+      ) do
+    with :ok <- Session.alive(session_id),
+         {:ok, game} <- Session.move(session_id, player_id, pos) do
+    end
   end
 
   @impl GenServer
